@@ -21,6 +21,17 @@ class SensorRepository extends ServiceEntityRepository
         parent::__construct($registry, Sensor::class);
     }
 
+    public function findAllByModuleId($moduleId)
+    {
+    $entityManager = $this->getEntityManager();
+    $query = $entityManager->createQuery(
+        'SELECT s
+        FROM App\Entity\Sensor s
+        WHERE s.modules = :moduleId'
+    )->setParameter('moduleId', $moduleId);
+
+    return $query->getResult();
+    }
     //    /**
     //     * @return Sensor[] Returns an array of Sensor objects
     //     */

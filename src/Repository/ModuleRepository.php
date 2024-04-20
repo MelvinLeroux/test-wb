@@ -21,6 +21,27 @@ class ModuleRepository extends ServiceEntityRepository
         parent::__construct($registry, Module::class);
     }
 
+
+
+    public function findOneWithSensorsAndMeasurements($id)
+{
+    $entityManager = $this->getEntityManager();
+    $query = $entityManager->createQuery(
+        'SELECT s.id as sensor_id, s.type as sensor_type, me.id as measurement_id, me.value as measurement_value, me.createdAt as measurement_date
+        FROM App\Entity\Module m
+        LEFT JOIN m.sensors s
+        LEFT JOIN m.measurements me
+        WHERE m.id = :id'
+    )->setParameter('id', $id);
+    return $query->getResult();
+
+   
+}
+
+
+}
+
+    
     //    /**
     //     * @return Module[] Returns an array of Module objects
     //     */
@@ -45,4 +66,3 @@ class ModuleRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-}

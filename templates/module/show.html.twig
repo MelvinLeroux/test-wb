@@ -6,5 +6,35 @@
     <h1>{{ module.name }}</h1>
     <p>status: {{ module.status }}</p>
     <p>Other details: ...</p>
+    {% set sensorData = [] %}
+    {% for sensor in sensors %}
+        {% set sensorItem = { 'id': sensor.id, 'type': sensor.type } %}
+        {% set sensorData = sensorData|merge([sensorItem]) %}
+    {% endfor %} 
+    {% set measurementData = [] %}
+    {% for measurement in measurements %}
+        {% set measurementItem = { 'id': measurement.id, 'value': measurement.value, 'createdAt': measurement.createdAt } %}
+        {% set measurementData = measurementData|merge([measurementItem]) %}
+    {% endfor %}
+    {% set moduleData= {
+        id: module.id,
+        name: module.name,
+        status:module.status,
+        'sensors': sensorData,
+        'measurements': measurementData
+
+    } %}
+   <div id="module-data" data-module="{{ moduleData|json_encode}}"></div>
+
     {# Afficher d'autres détails du module ici #}
+{% endblock %}
+{% block javascripts %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const module_data = document.getElementById('module-data');
+        var moduleData = JSON.parse(module_data.dataset.module);
+        console.log(module_data,moduleData,module_data.dataset.module);
+    });
+        
+    </script>
 {% endblock %}

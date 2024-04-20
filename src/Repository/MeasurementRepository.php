@@ -21,6 +21,19 @@ class MeasurementRepository extends ServiceEntityRepository
         parent::__construct($registry, Measurement::class);
     }
 
+    public function findAllByModuleId($moduleId)
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT m
+            FROM App\Entity\Measurement m
+            WHERE m.module = :moduleId'
+        )->setParameter('moduleId', $moduleId);
+
+        return $query->getResult();
+    }
+    
+    //    
     //    /**
     //     * @return Measurement[] Returns an array of Measurement objects
     //     */

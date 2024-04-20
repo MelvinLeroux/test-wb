@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Entity\Module;
 use App\Entity\Sensor;
 use App\Form\ModuleFormType;
+use App\Repository\MeasurementRepository;
+use App\Repository\ModuleRepository;
+use App\Repository\SensorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,20 +28,25 @@ class ModuleController extends AbstractController
     public function index(): Response
     {
         $modules = $this->entityManager->getRepository(Module::class)->findAll();
-
         return $this->render('module/index.html.twig', [
-            'modules' => $modules,]);
-    }
-
-    #[Route('/{id}', name: '_show')]
-    public function show(Module $module): Response
-    {
-        return $this->render('module/show.html.twig', [
-            'module' => $module,
+            'modules' => $modules
         ]);
     }
 
-    #[Route('/create', name: '_create')]
+    #[Route('/{id}', name: '_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(Module $module, ModuleRepository $moduleRepository, SensorRepository $sensorRepository, MeasurementRepository $measurementRepository ): Response
+{
+    // Utilisez la méthode findWithDatas pour récupérer les données étendues du module
+    $measurements = $measurementRepository->findAllByModuleId($module->getId());
+    $sensors = $sensorRepository->findAllByModuleId($module->getId());
+
+    return $this->render('module/show.html.twig', [
+        'module' => $module,
+        'sensors' => $sensors,
+        'measurements' => $measurements
+    ]);
+}
+    #[Route('/create', name: '_create', methods: ['GET','POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     { 
         $module = new Module();
@@ -81,7 +89,7 @@ class ModuleController extends AbstractController
         
             // Rediriger ou afficher un message de réussite
             $this->addFlash('success', 'Module created successfully!');
-            return $this->redirectToRoute('app_module_create');
+            return $this->redirectToRoute('app_module_list');
         }
 
 
@@ -91,8 +99,8 @@ class ModuleController extends AbstractController
             $this->addFlash('error', $error->getMessage());
         }
 
-    return $this->render('module/index.html.twig', [
-        'form' => $form->createView(),
-    ]);
+        return $this->render('module/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

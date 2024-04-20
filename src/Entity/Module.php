@@ -40,6 +40,9 @@ class Module
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $startedAt = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $stoppedAt = null;
+
     /**
      * @var Collection<int, Measurement>
      */
@@ -162,6 +165,18 @@ class Module
     public function setStartedAt(\DateTimeInterface $startedAt): self
     {
         $this->startedAt = $startedAt;
+
+        return $this;
+    }
+
+    public function getstoppedAt(): ?\DateTimeInterface
+    {
+        return $this->stoppedAt;
+    }
+
+    public function setstoppedAt(?\DateTimeInterface $stoppedAt): static
+    {
+        $this->stoppedAt = $stoppedAt;
 
         return $this;
     }

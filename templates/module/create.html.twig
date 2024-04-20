@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Module{% endblock %}
+
+{% block body %}
+    <h1>Create Module</h1>
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        <h2>Sensors</h2>
+        <ul class="tags">
+            {% for sensor in form.sensors %}
+                <li>{{ form_row(sensor.type) }}</li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Create Module</button>
+    {{ form_end(form) }}
+
+    {# Afficher les messages flash de succès #}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {# Afficher les messages flash d'erreur #}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endblock %}

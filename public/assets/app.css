@@ -1,0 +1,30 @@
+/* Ajoutez ces styles à votre fichier CSS ou directement dans votre template Twig */
+
+/* Style pour le fond noir */
+body {
+    background-color: black;
+    color: white; /* Couleur du texte */
+}
+
+/* Style pour centrer le formulaire */
+.form-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px; /* Largeur du formulaire */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1); /* Couleur de fond avec transparence */
+    border-radius: 10px;
+    text-align: center; /* Centrer le texte horizontalement */
+
+}
+
+/* Style pour les champs du formulaire */
+.form-control {
+    margin-bottom: 20px; /* Espacement entre les champs */
+}
+.form-title {
+    margin-top: 0;
+    margin-bottom: 5px; /* Espacement entre le titre et le formulaire */
+}

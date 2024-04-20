@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ModuleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ModuleRepository::class)]
@@ -35,6 +36,9 @@ class Module
      */
     #[ORM\OneToMany(targetEntity: Measurement::class, mappedBy: 'module')]
     private Collection $measurements;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $startedAt = null;
 
     /**
      * @var Collection<int, Measurement>
@@ -146,6 +150,18 @@ class Module
                 $measurement->setModule(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStartedAt(): ?\DateTimeInterface
+    {
+        return $this->startedAt;
+    }
+
+    public function setStartedAt(\DateTimeInterface $startedAt): self
+    {
+        $this->startedAt = $startedAt;
 
         return $this;
     }

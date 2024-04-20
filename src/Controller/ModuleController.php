@@ -5,27 +5,41 @@ namespace App\Controller;
 use App\Entity\Module;
 use App\Entity\Sensor;
 use App\Form\ModuleFormType;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/module', name: 'app_module')]
 class ModuleController extends AbstractController
 {
-    #[Route('/list', name: 'app_module_list')]
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    #[Route('/list', name: '_list')]
     public function index(): Response
     {
+        $modules = $this->entityManager->getRepository(Module::class)->findAll();
+
         return $this->render('module/index.html.twig', [
-            'controller_name' => 'ModuleController',
+            'modules' => $modules,]);
+    }
+
+    #[Route('/{id}', name: '_show')]
+    public function show(Module $module): Response
+    {
+        return $this->render('module/show.html.twig', [
+            'module' => $module,
         ]);
     }
+
     #[Route('/create', name: '_create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     { 
         $module = new Module();
 

@@ -1,20 +1,14 @@
+{# templates/module/index.html.twig #}
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ModuleController!{% endblock %}
+{% block title %}List of Modules{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello ! ✅</h1>
-
-    This friendly message is coming from:
+    <h1>List of Modules</h1>
     <ul>
-        <li>Your controller at <code>/home/student/test-WeBreathe/src/Controller/ModuleController.php</code></li>
-        <li>Your template at <code>/home/student/test-WeBreathe/templates/module/index.html.twig</code></li>
+        {% for module in modules %}
+            <li><a href="{{ path('app_module_show', {'id': module.id}) }}">{{ module.name }}</a></li>
+        {% endfor %}
     </ul>
-</div>
 {% endblock %}

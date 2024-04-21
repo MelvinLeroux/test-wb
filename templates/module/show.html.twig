@@ -4,8 +4,14 @@
 
 {% block body %}
     <h1>{{ module.name }}</h1>
-    <p>status: {{ module.status }}</p>
-    <p>Other details: ...</p>
+    {% if module.status == 1 %}
+        <p>Etat du module: En marche" </p>
+        <p>En fonctionnement depuis le {{ module.startedAt.format('d-m-Y H:i:s') }}</p>
+    {% else %}
+        <p>Etat du module: Eteint</p>
+        <p>Eteint depuis le {{ module.stoppedAt.format('d-m-Y H:i:s') }}</p>
+    {% endif %}
+   
     {% set sensorData = [] %}
     {% for sensor in sensors %}
         {% set sensorItem = { 'id': sensor.id, 'type': sensor.type } %}
@@ -29,6 +35,11 @@
     %}
     <div id="module-data" data-module="{{ moduleData|json_encode}}"></div>
     <div width="200px" height="200px" class="block">
+        <select id="sensor-select">
+            {% for sensor in moduleData.sensors %}
+                <option value="{{ sensor.id }}">{{ sensor.type }}</option>
+            {% endfor %}
+        </select>
         <canvas id="myChart"></canvas>
     </div>
     {# Afficher d'autres détails du module ici #}
@@ -37,40 +48,19 @@
 {% block javascripts %}
 {# Charger la bibliothèque Chart.js avant votre script JavaScript #}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const module_data = document.getElementById('module-data');
-            var moduleData = JSON.parse(module_data.dataset.module);
-            console.log(moduleData.sensors);
-            
-            var measurementsForFirstSensor = moduleData.measurements.filter(item => item.sensorId === moduleData.sensors[0].id);
-            var limitedMeasurements = measurementsForFirstSensor.slice(-20);
-            // Formatter les étiquettes pour inclure uniquement les heures et les minutes
-            var labels = limitedMeasurements.map(item => {
-                const date = new Date(item.createdAt.date);
-                return date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
-            });
-            var values = limitedMeasurements.map(item => item.value);
-            var sensorIds = limitedMeasurements.map(item => item.sensorId);
-            
-            console.log(labels);
-            console.log(values);
-            console.log(sensorIds);
-
             let ctx = document.getElementById('myChart').getContext('2d');
             let data = {
-                labels: labels,
+                labels: [],
                 datasets: [{
                     label: 'Module Data',
-                    data: values,
+                    data: [],
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1
                 }]
-            };
-
-            let options = {
-                // Spécifiez ici les options de votre graphique si nécessaire
             };
 
             let myChart = new Chart(ctx, {
@@ -81,7 +71,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Module 1 temperature Data'
+                            text: `Module 1 Data`
                         },
                     },
                     interaction: {
@@ -106,6 +96,46 @@
                         }
                     }
                 }
+            });
+
+
+            const module_data = document.getElementById('module-data');
+            const moduleData = JSON.parse(module_data.dataset.module);
+            const sensorSelect = document.getElementById('sensor-select');
+
+            console.log(moduleData.sensors);
+            _.forEach(moduleData.sensors, function(sensor) {
+                console.log("lodash",sensor.type);
+            });
+
+            sensorSelect.addEventListener('change', function() {
+                const selectedSensorId = parseInt(sensorSelect.value);
+                var measurementsForSelectedSensor = moduleData.measurements.filter(item => item.sensorId === selectedSensorId);
+                var limitedMeasurementsForSelectedSensor = measurementsForSelectedSensor.slice(-20);
+                console.log(selectedSensorId);
+                       // Formatter les étiquettes et les valeurs pour le nouveau capteur sélectionné
+                var labels = limitedMeasurementsForSelectedSensor.map(item => {
+                    const date = new Date(item.createdAt.date);
+                    const dayOfMonth = date.getDate();
+                    const month = date.getMonth() + 1;
+                    const hours = date.getHours();
+                    const minutes = date.getMinutes();
+                    return `${dayOfMonth}/${month} - ${hours}:${minutes}`;
+                });
+
+                var values = limitedMeasurementsForSelectedSensor.map(item => item.value);
+
+                // Mettre à jour les données du graphique avec les nouvelles valeurs
+                myChart.data.labels = labels;
+                myChart.data.datasets[0].data = values;
+                myChart.options.scales.y.suggestedMin = Math.min(...values) - 5;
+                myChart.options.scales.y.suggestedMax = Math.max(...values) + 5;
+
+                // Mettre à jour le titre du graphique avec le type du nouveau capteur sélectionné
+                myChart.options.plugins.title.text = `Module 1 ${moduleData.sensors.find(sensor => sensor.id === selectedSensorId).type} Data`;
+
+                // Mettre à jour le graphique
+                myChart.update();
             });
         });
     </script>

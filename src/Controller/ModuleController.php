@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
-#[Route('/module', name: 'app_module')]
+#[Route('', name: 'app_module')]
 class ModuleController extends AbstractController
 {
     private $entityManager;
@@ -24,7 +24,7 @@ class ModuleController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/list', name: '_list')]
+    #[Route('', name: '_list')]
     public function index(): Response
     {
         $modules = $this->entityManager->getRepository(Module::class)->findAll();
@@ -34,7 +34,7 @@ class ModuleController extends AbstractController
     }
 
     #[Route('/{id}', name: '_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(Module $module, ModuleRepository $moduleRepository, SensorRepository $sensorRepository, MeasurementRepository $measurementRepository ): Response
+    public function show(Module $module, SensorRepository $sensorRepository, MeasurementRepository $measurementRepository ): Response
 {
     // Utilisez la méthode findWithDatas pour récupérer les données étendues du module
     $measurements = $measurementRepository->findAllByModuleId($module->getId());

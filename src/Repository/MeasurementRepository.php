@@ -23,6 +23,7 @@ class MeasurementRepository extends ServiceEntityRepository
 
     public function findAllByModuleId($moduleId)
     {
+        // Get all measurements for the current module
         $entityManager = $this->getEntityManager();
         $query = $entityManager->createQuery(
             'SELECT m

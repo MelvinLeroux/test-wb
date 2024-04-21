@@ -14,6 +14,7 @@ class Appfixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        // create 3 modules
         for ($i = 1; $i <= 3; $i++) {
             $module = new Module();
             $module->setName('Module ' . $i);
@@ -24,13 +25,12 @@ class Appfixtures extends Fixture
             $this->addReference('module_' . $i, $module);
         }
 
-        // Création des capteurs
+        // create 3 sensors for each module
         $sensorData = [
             ['type' => 'temperature'],
             ['type' => 'humidity'],
             ['type' => 'pressure'],
         ];
-
         for ($i = 1; $i <= 3; $i++) {
             foreach ($sensorData as $data) {
                 $sensor = new Sensor();
@@ -41,7 +41,7 @@ class Appfixtures extends Fixture
             }
         }
 
-        // Création des mesures
+        // create measurements for each sensor
         for ($i = 1; $i <= 3; $i++) {
             /** @var Module $module */
             $module = $this->getReference('module_' . $i);
@@ -49,9 +49,7 @@ class Appfixtures extends Fixture
                 $this->getReference('temperature_sensor_' . $i),
                 $this->getReference('humidity_sensor_' . $i),
                 $this->getReference('pressure_sensor_' . $i),
-            ];// $product = new Product();
-        // $manager->persist($product);
-            // ...
+            ];
             foreach ($sensors as $sensor) {
                 $createdAt = new DateTimeImmutable();
                 for ($j = 0; $j < 100; $j++) {
@@ -62,17 +60,17 @@ class Appfixtures extends Fixture
             
                     switch ($sensor->getType()) {
                         case 'temperature':
-                            // Générer une température aléatoire entre -20 et 50
+                            // generate random temperature between -20 and 50
                             $temperature = mt_rand(-2000, 5000) / 100;
                             $measurement->setValue($temperature);
                             break;
                         case 'humidity':
-                            // Générer une humidité aléatoire entre 0 et 100
+                            // generate random humidity between 0 and 100
                             $humidity = mt_rand(0, 100);
                             $measurement->setValue($humidity);
                             break;
                         case 'pressure':
-                            // Générer une pression aléatoire entre 950 et 1050
+                            // generate random pressure between 950 and 1050
                             $pressure = mt_rand(950, 1050);
                             $measurement->setValue($pressure);
                             break;
@@ -80,7 +78,7 @@ class Appfixtures extends Fixture
             
                     $manager->persist($measurement);
                     
-                    // Créer un nouvel objet DateTimeImmutable pour ajouter 5 minutes pour la prochaine mesure
+                    // create a new measurement every 5 minutes
                     $createdAt = $createdAt->add(new DateInterval('PT5M'));
                 }
             }

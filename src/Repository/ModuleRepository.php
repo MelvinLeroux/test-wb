@@ -25,6 +25,7 @@ class ModuleRepository extends ServiceEntityRepository
 
     public function findOneWithSensorsAndMeasurements($id)
 {
+    // Get all sensors and measurements for the current module
     $entityManager = $this->getEntityManager();
     $query = $entityManager->createQuery(
         'SELECT s.id as sensor_id, s.type as sensor_type, me.id as measurement_id, me.value as measurement_value, me.createdAt as measurement_date

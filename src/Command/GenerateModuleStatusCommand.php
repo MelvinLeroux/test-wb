@@ -31,22 +31,22 @@ class GenerateModuleStatusCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // function to generate random status for every module
         $modules = $this->entityManager->getRepository(Module::class)->findAll();
-
+        // Loop through all modules
         foreach ($modules as $module) {
             $status = random_int(0, 1);
             $module->setStatus($status);
-
+            // if status is 0, set stoppedAt to current date and time
             if ($status === 0) {
-                // Si le statut est 0, mettez stoppedAt à la date et heure actuelles
                 $stoppedAt = new DateTimeImmutable();
                 $module->setStoppedAt($stoppedAt);
             } else {
-                // Réinitialisez stoppedAt à null si le statut repasse à 1
+                // if status is 1, set startedAt to current date and time and stoppedAt to null
                 $module->setStoppedAt(null);
                 $module->setStartedAt(new DateTimeImmutable());
             }
-
+            // if status is 1 and startedAt is null, set startedAt to current date and time
             if ($module->getStartedAt() === null) {
                 $startedAt = new DateTimeImmutable();
                 $module->setStartedAt($startedAt);

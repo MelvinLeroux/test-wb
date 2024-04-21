@@ -28,23 +28,18 @@ class GenerateMeasurementCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // function to generate random measurements for every sensors in a module
         $modules = $this->entityManager->getRepository(Module::class)->findAll();
-
+        // Loop through all modules
         foreach ($modules as $module) {
             if (!$module->isStatus()=== true) {
                 continue;
             }
+            // Get all sensors for the current module
             $sensors = $module->getSensors();
+            // Loop through all sensors
             foreach ($sensors as $sensor) {
                 $measurement = new Measurement();
                 $measurement->setSensor($sensor);
@@ -52,7 +47,7 @@ class GenerateMeasurementCommand extends Command
                 
                 $createdAt = new DateTimeImmutable();
                 $measurement->setCreatedAt($createdAt);
-                // Générer des valeurs aléatoires basées sur le type de capteur
+                // Generate random value based on sensor type
                 switch ($sensor->getType()) {
                     case 'temperature':
                         $value = rand(-20, 50);
@@ -69,7 +64,7 @@ class GenerateMeasurementCommand extends Command
                 
                 $measurement->setValue($value);
                 
-                // Enregistrer la mesure
+                // add measurement
                 $this->entityManager->persist($measurement);
             }
         }

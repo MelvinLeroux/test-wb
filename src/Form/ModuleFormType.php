@@ -40,14 +40,14 @@ class ModuleFormType extends AbstractType
         foreach ($sensors as $sensor) {
             $type = $sensor->getType();
             
-            // Vérifie si le type de capteur a déjà été rencontré
+            // check if the sensor type is already present
             if (in_array($type, $sensorTypes)) {
-                // Ajoute une violation de contrainte s'il est déjà présent
+                // add a violation to the form field 'sensors' if the sensor type is already present
                 $context->buildViolation('Same sensor type selected multiple times.')
                     ->atPath('sensors')
                     ->addViolation();
             }
-            // Stocke le type de capteur pour la vérification suivante
+            // store the sensor type in the array to check for duplicates
             $sensorTypes[] = $type;
         }
     }

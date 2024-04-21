@@ -36,7 +36,7 @@ class ModuleController extends AbstractController
     #[Route('/{id}', name: '_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Module $module, SensorRepository $sensorRepository, MeasurementRepository $measurementRepository ): Response
 {
-    // Utilisez la méthode findWithDatas pour récupérer les données étendues du module
+    // get all measurements and sensors for the current module
     $measurements = $measurementRepository->findAllByModuleId($module->getId());
     $sensors = $sensorRepository->findAllByModuleId($module->getId());
     return $this->render('module/show.html.twig', [
@@ -49,8 +49,7 @@ class ModuleController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     { 
         $module = new Module();
-
-        // Créer des capteurs avec des types définis
+        // Create 3 sensors for the module
         $sensor1 = new Sensor();
         $sensor1->setType('temperature');
         $sensor2 = new Sensor();
@@ -58,41 +57,35 @@ class ModuleController extends AbstractController
         $sensor3 = new Sensor();
         $sensor3->setType('pressure');
 
-        // Ajouter les capteurs au module
+        // Add sensors to the module
         $module->addSensor($sensor1);
         $module->addSensor($sensor2);
         $module->addSensor($sensor3);
 
-        // Créer le formulaire pour le module
         $form = $this->createForm(ModuleFormType::class, $module);
         $form->handleRequest($request);
 
         // Traiter le formulaire soumis
         if ($form->isSubmitted() && $form->isValid()) {
-            // Supprimer les capteurs avec un type null ou vide
             foreach ($module->getSensors() as $key => $sensor) {
                 $type = $sensor->getType();
+                // delete sensors with type null or empty
                 if ($type === 'null' || $type === '') {
-                    // Supprimer le capteur de la base de données
                     $module->removeSensor($sensor);
                     $entityManager->remove($sensor);
                 } else {
-                    // Lier le capteur au module s'il a un type défini
                     $module->addSensor($sensor);
                 }
             }
-        
-            // Persister le module
             $entityManager->persist($module);
             $entityManager->flush();
-        
-            // Rediriger ou afficher un message de réussite
             $this->addFlash('success', 'Module created successfully!');
+        
             return $this->redirectToRoute('app_module_list');
         }
 
 
-        // Si le formulaire n'est pas valide, récupérer les erreurs et les ajouter aux flashbags
+        // if form is not valid, display error messages
         $errors = $form->getErrors(true);
         foreach ($errors as $error) {
             $this->addFlash('error', $error->getMessage());

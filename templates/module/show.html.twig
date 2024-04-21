@@ -11,30 +11,102 @@
         {% set sensorItem = { 'id': sensor.id, 'type': sensor.type } %}
         {% set sensorData = sensorData|merge([sensorItem]) %}
     {% endfor %} 
+
     {% set measurementData = [] %}
     {% for measurement in measurements %}
-        {% set measurementItem = { 'id': measurement.id, 'value': measurement.value, 'createdAt': measurement.createdAt } %}
+        {% set sensorId = measurement.sensor.id %}
+        {% set measurementItem = { 'id': measurement.id, 'value': measurement.value, 'createdAt': measurement.createdAt, 'sensorId': sensorId } %}
         {% set measurementData = measurementData|merge([measurementItem]) %}
     {% endfor %}
-    {% set moduleData= {
+
+    {% set moduleData = {
         id: module.id,
         name: module.name,
         status:module.status,
         'sensors': sensorData,
-        'measurements': measurementData
-
-    } %}
-   <div id="module-data" data-module="{{ moduleData|json_encode}}"></div>
-
+        'measurements': measurementData 
+        }
+    %}
+    <div id="module-data" data-module="{{ moduleData|json_encode}}"></div>
+    <div width="200px" height="200px" class="block">
+        <canvas id="myChart"></canvas>
+    </div>
     {# Afficher d'autres détails du module ici #}
 {% endblock %}
+
 {% block javascripts %}
+{# Charger la bibliothèque Chart.js avant votre script JavaScript #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const module_data = document.getElementById('module-data');
-        var moduleData = JSON.parse(module_data.dataset.module);
-        console.log(module_data,moduleData,module_data.dataset.module);
-    });
-        
+        document.addEventListener('DOMContentLoaded', function() {
+            const module_data = document.getElementById('module-data');
+            var moduleData = JSON.parse(module_data.dataset.module);
+            console.log(moduleData.sensors);
+            
+            var measurementsForFirstSensor = moduleData.measurements.filter(item => item.sensorId === moduleData.sensors[0].id);
+            var limitedMeasurements = measurementsForFirstSensor.slice(-20);
+            // Formatter les étiquettes pour inclure uniquement les heures et les minutes
+            var labels = limitedMeasurements.map(item => {
+                const date = new Date(item.createdAt.date);
+                return date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
+            });
+            var values = limitedMeasurements.map(item => item.value);
+            var sensorIds = limitedMeasurements.map(item => item.sensorId);
+            
+            console.log(labels);
+            console.log(values);
+            console.log(sensorIds);
+
+            let ctx = document.getElementById('myChart').getContext('2d');
+            let data = {
+                labels: labels,
+                datasets: [{
+                    label: 'Module Data',
+                    data: values,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            let options = {
+                // Spécifiez ici les options de votre graphique si nécessaire
+            };
+
+            let myChart = new Chart(ctx, {
+                type: 'line', // Changez ce type selon votre besoin
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Module 1 temperature Data'
+                        },
+                    },
+                    interaction: {
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Temperature'
+                            },
+                            suggestedMin: -20,
+                            suggestedMax: 50
+                        }
+                    }
+                }
+            });
+        });
     </script>
 {% endblock %}

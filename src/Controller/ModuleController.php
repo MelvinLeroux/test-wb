@@ -39,7 +39,6 @@ class ModuleController extends AbstractController
     // Utilisez la méthode findWithDatas pour récupérer les données étendues du module
     $measurements = $measurementRepository->findAllByModuleId($module->getId());
     $sensors = $sensorRepository->findAllByModuleId($module->getId());
-
     return $this->render('module/show.html.twig', [
         'module' => $module,
         'sensors' => $sensors,

@@ -24,7 +24,7 @@ class Sensor
     /**
      * @var Collection<int, Measurement>
      */
-    #[ORM\OneToMany(targetEntity: Measurement::class, mappedBy: 'Sensor')]
+    #[ORM\OneToMany(targetEntity: Measurement::class, mappedBy: 'sensor')]
     private Collection $measurements;
 
     public function __construct()

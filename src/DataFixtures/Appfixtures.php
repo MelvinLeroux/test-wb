@@ -19,6 +19,7 @@ class Appfixtures extends Fixture
             $module->setName('Module ' . $i);
             $module->setStatus(1);
             $module->setCreatedAt(new DateTimeImmutable());
+            $module -> setstartedAt(new DateTimeImmutable());
             $manager->persist($module);
             $this->addReference('module_' . $i, $module);
         }

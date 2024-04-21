@@ -4,12 +4,14 @@
 
 {% block body %}
     <h1>{{ module.name }}</h1>
-    {% if module.status == 1 %}
-        <p>Etat du module: En marche" </p>
-        <p>En fonctionnement depuis le {{ module.startedAt.format('d-m-Y H:i:s') }}</p>
-    {% else %}
+    {% if module.status == 1 and module.startedAt is defined and module.startedAt is not null %}
+        <p>Etat du module: En marche </p>
+        <p>En fonctionnement depuis le {{ module.startedAt|date('d-m-Y H:i:s', 'Europe/Paris') }}</p>
+    {% elseif module.stoppedAt is defined and module.stoppedAt is not null %}
         <p>Etat du module: Eteint</p>
-        <p>Eteint depuis le {{ module.stoppedAt.format('d-m-Y H:i:s') }}</p>
+        <p>Eteint depuis le {{ module.stoppedAt|date('d-m-Y H:i:s', 'Europe/Paris') }}</p>
+    {% else %}
+        <p>Etat du module: Inconnu</p>
     {% endif %}
    
     {% set sensorData = [] %}
@@ -33,7 +35,8 @@
         'measurements': measurementData 
         }
     %}
-    <div id="module-data" data-module="{{ moduleData|json_encode}}"></div>
+    
+    <div id="module-data" hidden="hidden" data-module="{{ moduleData|json_encode}}"></div>
     <div width="200px" height="200px" class="block">
         <select id="sensor-select">
             {% for sensor in moduleData.sensors %}
@@ -99,28 +102,23 @@
             });
 
 
-            const module_data = document.getElementById('module-data');
-            const moduleData = JSON.parse(module_data.dataset.module);
+            const moduleData = document.getElementById('module-data');
+            const moduleDataParsed = JSON.parse(moduleData.dataset.module);
             const sensorSelect = document.getElementById('sensor-select');
-
-            console.log(moduleData.sensors);
-            _.forEach(moduleData.sensors, function(sensor) {
-                console.log("lodash",sensor.type);
-            });
 
             sensorSelect.addEventListener('change', function() {
                 const selectedSensorId = parseInt(sensorSelect.value);
-                var measurementsForSelectedSensor = moduleData.measurements.filter(item => item.sensorId === selectedSensorId);
+                var measurementsForSelectedSensor = moduleDataParsed.measurements.filter(item => item.sensorId === selectedSensorId);
                 var limitedMeasurementsForSelectedSensor = measurementsForSelectedSensor.slice(-20);
-                console.log(selectedSensorId);
                        // Formatter les étiquettes et les valeurs pour le nouveau capteur sélectionné
                 var labels = limitedMeasurementsForSelectedSensor.map(item => {
-                    const date = new Date(item.createdAt.date);
-                    const dayOfMonth = date.getDate();
-                    const month = date.getMonth() + 1;
-                    const hours = date.getHours();
-                    const minutes = date.getMinutes();
-                    return `${dayOfMonth}/${month} - ${hours}:${minutes}`;
+                const date = new Date(item.createdAt.date);
+                date.setHours(date.getHours() - 6); // Ajoutez 6 heures au temps actuel
+                const dayOfMonth = date.getDate();
+                const month = date.getMonth() + 1;
+                const hours = ('0' + date.getHours()).slice(-2); // Ajoute un zéro devant si nécessaire
+                const minutes = ('0' + date.getMinutes()).slice(-2); // Ajoute un zéro devant si nécessaire
+                return `${dayOfMonth}/${month} - ${hours}:${minutes}`;
                 });
 
                 var values = limitedMeasurementsForSelectedSensor.map(item => item.value);
@@ -132,7 +130,7 @@
                 myChart.options.scales.y.suggestedMax = Math.max(...values) + 5;
 
                 // Mettre à jour le titre du graphique avec le type du nouveau capteur sélectionné
-                myChart.options.plugins.title.text = `Module 1 ${moduleData.sensors.find(sensor => sensor.id === selectedSensorId).type} Data`;
+                myChart.options.plugins.title.text = `Module 1 ${moduleDataParsed.sensors.find(sensor => sensor.id === selectedSensorId).type} Data`;
 
                 // Mettre à jour le graphique
                 myChart.update();

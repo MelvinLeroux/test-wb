@@ -4,28 +4,33 @@
 
 {% block body %}
     <h1>Create Module</h1>
-    {{ form_start(form) }}
-        {{ form_row(form.name) }}
-        <h2>Sensors</h2>
-        <ul class="tags">
-            {% for sensor in form.sensors %}
-                <li>{{ form_row(sensor.type) }}</li>
-            {% endfor %}
-        </ul>
-        <button type="submit">Create Module</button>
-    {{ form_end(form) }}
-
-    {# Afficher les messages flash de succès #}
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
 
     {# Afficher les messages flash d'erreur #}
     {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">
+        <div class="alert alert-danger" id="error-message">
             {{ message }}
         </div>
+        <script>
+            setTimeout(function() {
+                document.getElementById('error-message').remove();
+            }, 2000);
+        </script>
     {% endfor %}
+
+    {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <h2>Sensors</h2>
+        <div class="tags">
+            {% for sensor in form.sensors %}
+                {{ form_label(sensor.type) }}
+                {{ form_widget(sensor.type, {'attr': {'class': 'form-control'}}) }}
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Create Module</button>
+    {{ form_end(form) }}
+
+
 {% endblock %}

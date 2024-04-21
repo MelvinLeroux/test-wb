@@ -44,6 +44,7 @@ class GenerateModuleStatusCommand extends Command
             } else {
                 // Réinitialisez stoppedAt à null si le statut repasse à 1
                 $module->setStoppedAt(null);
+                $module->setStartedAt(new DateTimeImmutable());
             }
 
             if ($module->getStartedAt() === null) {

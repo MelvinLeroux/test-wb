@@ -4,12 +4,37 @@
 
 {% block body %}
     <h1>{{ module.name }}</h1>
+    {% set currentTime = "now"|date('U') %}
     {% if module.status == 1 and module.startedAt is defined and module.startedAt is not null %}
-        <p>Etat du module: En marche </p>
-        <p>En fonctionnement depuis le {{ module.startedAt|date('d-m-Y H:i:s', 'Europe/Paris') }}</p>
+        <p class="alert alert-success">Etat du module: En marche </p>
+            {% set startTime = module.startedAt|date('U') %}
+            {% set durationSeconds = currentTime - startTime %}
+            {% set durationHours = durationSeconds // 3600 %}
+            {% set durationMinutes = (durationSeconds % 3600) // 60 %}
+            {% set durationSecondsLeft = durationSeconds % 60 %}
+            <p class="alert alert-secondary">Durée de fonctionnement : {{ durationHours }} heures, {{ durationMinutes }} minutes et {{ durationSecondsLeft }} secondes</p>
     {% elseif module.stoppedAt is defined and module.stoppedAt is not null %}
-        <p>Etat du module: Eteint</p>
-        <p>Eteint depuis le {{ module.stoppedAt|date('d-m-Y H:i:s', 'Europe/Paris') }}</p>
+        <p class= "alert alert-danger">Etat du module: Eteint</p>
+            {% set stoppedTime = module.stoppedAt|date('U') %}
+            {% set durationSeconds = currentTime - stoppedTime %}
+            {% set durationHours = durationSeconds // 3600 %}
+            {% set durationMinutes = (durationSeconds % 3600) // 60 %}
+            {% set durationSecondsLeft = durationSeconds % 60 %}
+        <div class="alert alert-secondary">
+        <p>
+            Mise en pause depuis {{ durationHours }} heures, {{ durationMinutes }} minutes et {{ durationSecondsLeft }} secondes
+        </p>
+        <span>
+            {% set startTime = module.startedAt|date('U') %}
+            {% set stoppedTime = module.stoppedAt|date('U') %}
+            {% set workingTime = stoppedTime - startTime %}
+            {% set workingHours = workingTime // 3600 %}
+            {% set workingMinutes = (durationSeconds % 3600) // 60 %}
+            {% set workingSecondsLeft = durationSeconds % 60 %}
+            Le module a fonctionné pendant :  {{ workingHours }} heures, {{ workingMinutes }} minutes et {{ workingSecondsLeft }} secondes
+        </span>
+        </div>
+
     {% else %}
         <p>Etat du module: Inconnu</p>
     {% endif %}

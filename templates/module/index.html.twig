@@ -6,10 +6,28 @@
 
 {% block body %}
     <h1>List of Modules</h1>
-    <ul>
-        {% for module in modules %}
-            <li><a href="{{ path('app_module_show', {'id': module.id}) }}">{{ module.name }}</a></li>
-        {% endfor %}
-           <a href="{{ path('app_module_create') }}">Créer un module</a>
-    </ul>
+    <div class="row justify-content-center mb-3">
+        <a href="{{ path('app_module_create') }}"class="card-link btn btn-success">New module</a>
+    </div>
+    <div class="container">
+        <div class="row">
+            {% for module in modules %}
+                <div class="card mr-3 mb-3" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ module.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Liste of sensors</h6>
+                        <p class="card-text">
+                            {% for sensor in module.sensors %}
+                                {{ sensor.type }}
+                            {% endfor %}
+                        </p>
+                        <a href="{{ path('app_module_show', {'id': module.id}) }}" class="card-link btn btn-primary">Details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
 {% endblock %}
+
+

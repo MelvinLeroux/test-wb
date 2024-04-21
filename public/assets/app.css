@@ -9,6 +9,13 @@ body {
 h1 {
     text-align: center; /* Centrer le texte horizontalement */
 }
+h5 {
+    text-align: center; /* Centrer le texte horizontalement */
+    color : black;
+}
+p {
+    color: black;
+}
 /* Style pour centrer le formulaire */
 .form-container {
     position: absolute;

@@ -51,7 +51,6 @@ class GenerateModuleStatusCommand extends Command
                 $startedAt = new DateTimeImmutable();
                 $module->setStartedAt($startedAt);
             }
-            // Persistez et appliquez les modifications
             $this->entityManager->persist($module);
         }
 

@@ -31,6 +31,7 @@ class Appfixtures extends Fixture
             ['type' => 'humidity'],
             ['type' => 'pressure'],
         ];
+
         for ($i = 1; $i <= 3; $i++) {
             foreach ($sensorData as $data) {
                 $sensor = new Sensor();
@@ -43,7 +44,6 @@ class Appfixtures extends Fixture
 
         // create measurements for each sensor
         for ($i = 1; $i <= 3; $i++) {
-            /** @var Module $module */
             $module = $this->getReference('module_' . $i);
             $sensors = [
                 $this->getReference('temperature_sensor_' . $i),
@@ -84,6 +84,6 @@ class Appfixtures extends Fixture
             }
         }
         $manager->flush();
-        }
+    }
 }
 

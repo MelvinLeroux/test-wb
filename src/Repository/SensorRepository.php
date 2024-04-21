@@ -23,14 +23,14 @@ class SensorRepository extends ServiceEntityRepository
 
     public function findAllByModuleId($moduleId)
     {
-    // Get all sensors for the current module
-    $entityManager = $this->getEntityManager();
-    $query = $entityManager->createQuery(
-        'SELECT s
-        FROM App\Entity\Sensor s
-        WHERE s.modules = :moduleId'
-    )->setParameter('moduleId', $moduleId);
+        // Get all sensors for the current module
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT s
+            FROM App\Entity\Sensor s
+            WHERE s.modules = :moduleId'
+        )->setParameter('moduleId', $moduleId);
 
-    return $query->getResult();
+        return $query->getResult();
     }
 }

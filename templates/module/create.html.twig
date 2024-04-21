@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Create Module</h1>
 
-    {# Afficher les messages flash d'erreur #}
+    {# Display flash messages #}
     {% for message in app.flashes('error') %}
         <div class="alert alert-danger" id="error-message">
             {{ message }}
@@ -31,6 +31,4 @@
         </div>
         <button type="submit" class="btn btn-primary">Create Module</button>
     {{ form_end(form) }}
-
-
 {% endblock %}

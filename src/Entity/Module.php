@@ -46,7 +46,7 @@ class Module
     /**
      * @var Collection<int, Measurement>
      */
-  
+
 
     public function __construct()
     {
@@ -180,6 +180,4 @@ class Module
 
         return $this;
     }
-
-
 }

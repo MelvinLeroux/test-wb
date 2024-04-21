@@ -7,38 +7,39 @@
     {% set currentTime = "now"|date('U') %}
     {% if module.status == 1 and module.startedAt is defined and module.startedAt is not null %}
         <p class="alert alert-success">Etat du module: En marche </p>
-            {% set startTime = module.startedAt|date('U') %}
-            {% set durationSeconds = currentTime - startTime %}
-            {% set durationHours = durationSeconds // 3600 %}
-            {% set durationMinutes = (durationSeconds % 3600) // 60 %}
-            {% set durationSecondsLeft = durationSeconds % 60 %}
-            <p class="alert alert-secondary">Durée de fonctionnement : {{ durationHours }} heures, {{ durationMinutes }} minutes et {{ durationSecondsLeft }} secondes</p>
+        {% set startTime = module.startedAt|date('U') %}
+        {% set durationSeconds = currentTime - startTime %}
+        {% set durationHours = durationSeconds // 3600 %}
+        {% set durationMinutes = (durationSeconds % 3600) // 60 %}
+        {% set durationSecondsLeft = durationSeconds % 60 %}
+        <p class="alert alert-secondary">
+            Durée de fonctionnement : {{ durationHours }} heures, {{ durationMinutes }} minutes et {{ durationSecondsLeft }} secondes
+        </p>
     {% elseif module.stoppedAt is defined and module.stoppedAt is not null %}
         <p class= "alert alert-danger">Etat du module: Eteint</p>
-            {% set stoppedTime = module.stoppedAt|date('U') %}
-            {% set durationSeconds = currentTime - stoppedTime %}
-            {% set durationHours = durationSeconds // 3600 %}
-            {% set durationMinutes = (durationSeconds % 3600) // 60 %}
-            {% set durationSecondsLeft = durationSeconds % 60 %}
+        {% set stoppedTime = module.stoppedAt|date('U') %}
+        {% set durationSeconds = currentTime - stoppedTime %}
+        {% set durationHours = durationSeconds // 3600 %}
+        {% set durationMinutes = (durationSeconds % 3600) // 60 %}
+        {% set durationSecondsLeft = durationSeconds % 60 %}
         <div class="alert alert-secondary">
-        <p>
-            Mise en pause depuis {{ durationHours }} heures, {{ durationMinutes }} minutes et {{ durationSecondsLeft }} secondes
-        </p>
-        <span>
-            {% set startTime = module.startedAt|date('U') %}
-            {% set stoppedTime = module.stoppedAt|date('U') %}
-            {% set workingTime = stoppedTime - startTime %}
-            {% set workingHours = workingTime // 3600 %}
-            {% set workingMinutes = (durationSeconds % 3600) // 60 %}
-            {% set workingSecondsLeft = durationSeconds % 60 %}
-            Le module a fonctionné pendant :  {{ workingHours }} heures, {{ workingMinutes }} minutes et {{ workingSecondsLeft }} secondes
-        </span>
+            <p>
+                Mise en pause depuis {{ durationHours }} heures, {{ durationMinutes }} minutes et {{ durationSecondsLeft }} secondes
+            </p>
+            <span>
+                {% set startTime = module.startedAt|date('U') %}
+                {% set stoppedTime = module.stoppedAt|date('U') %}
+                {% set workingTime = stoppedTime - startTime %}
+                {% set workingHours = workingTime // 3600 %}
+                {% set workingMinutes = (durationSeconds % 3600) // 60 %}
+                {% set workingSecondsLeft = durationSeconds % 60 %}
+                Le module a fonctionné pendant :  {{ workingHours }} heures, {{ workingMinutes }} minutes et {{ workingSecondsLeft }} secondes
+            </span>
         </div>
-
     {% else %}
         <p>Etat du module: Inconnu</p>
     {% endif %}
-   
+
     {% set sensorData = [] %}
     {% for sensor in sensors %}
         {% set sensorItem = { 'id': sensor.id, 'type': sensor.type } %}
@@ -62,7 +63,7 @@
     %}
     
     <div id="module-data" hidden="hidden" data-module="{{ moduleData|json_encode}}"></div>
-    <div maxWidth="1024px" class="block">
+    <div class="block">
         <p class="text-white">Choisissez un capteur pour afficher les données</p>
         <select id="sensor-select">
             <option value="default">Sélectionner</option>
@@ -72,13 +73,13 @@
         </select>
         <canvas id="myChart"></canvas>
     </div>
-    {# Afficher d'autres détails du module ici #}
 {% endblock %}
 
 {% block javascripts %}
-{# Charger la bibliothèque Chart.js avant votre script JavaScript #}
+    {# load Chart.js library #}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let ctx = document.getElementById('myChart').getContext('2d');
@@ -101,7 +102,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: `Module 1 Data`
+                            text: `Module Data`
                         },
                     },
                     interaction: {
@@ -128,7 +129,6 @@
                 }
             });
 
-
             const moduleData = document.getElementById('module-data');
             const moduleDataParsed = JSON.parse(moduleData.dataset.module);
             const sensorSelect = document.getElementById('sensor-select');
@@ -141,37 +141,40 @@
                     myChart.data.labels = [];
                     myChart.data.datasets[0].data = [];
                     myChart.update();
+
                     return;
                 }
 
                 const selectedSensorId = parseInt(sensorSelect.value);
 
+                // Get the measurements for the selected sensor
                 const measurementsForSelectedSensor = moduleDataParsed.measurements.filter(item => item.sensorId === selectedSensorId);
+                // get the last 20 measurements
                 const limitedMeasurementsForSelectedSensor = measurementsForSelectedSensor.slice(-20);
-                       // Formatter les étiquettes et les valeurs pour le nouveau capteur sélectionné
+
+                // Format the data for the chart
                 const labels = limitedMeasurementsForSelectedSensor.map(item => {
-                const date = new Date(item.createdAt.date);
-                date.setHours(date.getHours() + 2); // Ajoutez 6 heures au temps actuel
-                const dayOfMonth = date.getDate();
-                const month = date.getMonth() + 1;
-                const hours = ('0' + date.getHours()).slice(-2); // Ajoute un zéro devant si nécessaire
-                const minutes = ('0' + date.getMinutes()).slice(-2); // Ajoute un zéro devant si nécessaire
-                return `${dayOfMonth}/${month} - ${hours}:${minutes}`;
+                    const date = new Date(item.createdAt.date);
+                    date.setHours(date.getHours() + 2); // +2 because of timezone difference with the server
+                    const dayOfMonth = date.getDate();
+                    const month = date.getMonth() + 1; // +1 because January is 0
+                    const hours = ('0' + date.getHours()).slice(-2);  // slice(-2) to get the last 2 characters
+                    const minutes = ('0' + date.getMinutes()).slice(-2); // slice(-2) to get the last 2 characters
+
+                    return `${dayOfMonth}/${month} - ${hours}:${minutes}`;
                 });
 
                 const values = limitedMeasurementsForSelectedSensor.map(item => item.value);
-
-                // Mettre à jour les données du graphique avec les nouvelles valeurs
+                // Update the chart data with the new data
                 myChart.data.labels = labels;
                 myChart.data.datasets[0].data = values;
                 myChart.options.scales.y.suggestedMin = Math.min(...values) - 5;
                 myChart.options.scales.y.suggestedMax = Math.max(...values) + 5;
-                myChart.options.scales.y.title.text = `${selectedTitle}`
-                console.log(moduleDataParsed)
-                // Mettre à jour le titre du graphique avec le type du nouveau capteur sélectionné
+                myChart.options.scales.y.title.text = `${selectedTitle}`;
+
+                // Update the chart title
                 myChart.options.plugins.title.text = `${moduleDataParsed.name} : ${moduleDataParsed.sensors.find(sensor => sensor.id === selectedSensorId).type} data`;
 
-                // Mettre à jour le graphique
                 myChart.update();
             });
         });

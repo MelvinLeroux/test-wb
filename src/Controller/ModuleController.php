@@ -6,7 +6,6 @@ use App\Entity\Module;
 use App\Entity\Sensor;
 use App\Form\ModuleFormType;
 use App\Repository\MeasurementRepository;
-use App\Repository\ModuleRepository;
 use App\Repository\SensorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,23 +27,26 @@ class ModuleController extends AbstractController
     public function index(): Response
     {
         $modules = $this->entityManager->getRepository(Module::class)->findAll();
+        
         return $this->render('module/index.html.twig', [
             'modules' => $modules
         ]);
     }
 
     #[Route('/{id}', name: '_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(Module $module, SensorRepository $sensorRepository, MeasurementRepository $measurementRepository ): Response
-{
-    // get all measurements and sensors for the current module
-    $measurements = $measurementRepository->findAllByModuleId($module->getId());
-    $sensors = $sensorRepository->findAllByModuleId($module->getId());
-    return $this->render('module/show.html.twig', [
-        'module' => $module,
-        'sensors' => $sensors,
-        'measurements' => $measurements
-    ]);
-}
+    public function show(Module $module, SensorRepository $sensorRepository, MeasurementRepository $measurementRepository ): Response   
+    {
+        // get all measurements and sensors for the current module
+        $measurements = $measurementRepository->findAllByModuleId($module->getId());
+        $sensors = $sensorRepository->findAllByModuleId($module->getId());
+        
+        return $this->render('module/show.html.twig', [
+            'module' => $module,
+            'sensors' => $sensors,
+            'measurements' => $measurements
+        ]);
+    }
+
     #[Route('/create', name: '_create', methods: ['GET','POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     { 
@@ -65,7 +67,6 @@ class ModuleController extends AbstractController
         $form = $this->createForm(ModuleFormType::class, $module);
         $form->handleRequest($request);
 
-        // Traiter le formulaire soumis
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($module->getSensors() as $key => $sensor) {
                 $type = $sensor->getType();
@@ -83,7 +84,6 @@ class ModuleController extends AbstractController
         
             return $this->redirectToRoute('app_module_list');
         }
-
 
         // if form is not valid, display error messages
         $errors = $form->getErrors(true);

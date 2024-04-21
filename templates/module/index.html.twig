@@ -1,12 +1,10 @@
-{# templates/module/index.html.twig #}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}List of Modules{% endblock %}
 
 {% block body %}
     <h1>List of Modules</h1>
-    {# Afficher les messages flash de succès #}
+    {# Display flash messages #}
     {% for message in app.flashes('success') %}
         <div class="alert alert-success" id="success-message">
             {{ message }}

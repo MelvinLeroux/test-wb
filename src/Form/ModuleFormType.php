@@ -33,6 +33,7 @@ class ModuleFormType extends AbstractType
             'data_class' => Module::class,
         ]);
     }
+
     public function validateSensors($sensors, ExecutionContextInterface $context)
     {
         $sensorTypes = [];

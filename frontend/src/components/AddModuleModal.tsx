@@ -4,7 +4,7 @@ import { DropDown } from '../design-system/DropDown';
 import { Button } from '../design-system/Button';
 interface AddModuleModalProps {
   onClose: () => void;
-  onAdd: (module: Partial<Module>) => Promise<void>;
+  onAdd: (module: Pick<Module, 'name' | 'sensors'>) => Promise<void>;
 }
 
 const optionsData = [

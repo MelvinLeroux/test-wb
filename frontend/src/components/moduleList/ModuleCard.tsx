@@ -1,13 +1,12 @@
 import React from 'react';
 import { Button } from '../../design-system/Button';
 import { Module } from '../../types';
-import { deleteModule } from '../../api/module';
 interface ModuleCardProps {
   module: Module;
   onDetails: () => void;
   detailsLabel?: string;
   deleteLabel?: string;
-  // onDelete: () => void;
+  onDelete: () => void;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({
@@ -15,15 +14,8 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   onDetails,
   detailsLabel = 'Détails',
   deleteLabel = 'Supprimer',
+  onDelete,
 }) => {
-  const handleDelete = () => {
-    deleteModule(module.id);
-  };
-
-  // handleDelete
-  // onDelete={() => {
-  //           onModuleDelete(module.id);
-  //         }}
   return (
     <div className='bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 w-72 max-w-xs flex flex-col justify-between transition-colors duration-300 mx-auto'>
       <div>
@@ -49,7 +41,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
       >
         {detailsLabel}
       </Button>
-      <Button onClick={handleDelete}>{deleteLabel}</Button>
+      <Button onClick={onDelete}>{deleteLabel}</Button>
     </div>
   );
 };

@@ -13,7 +13,8 @@ export type Module = {
   measurements?: Measurement[];
   startedAt?: string;
   stoppedAt?: string;
-}
+};
+
 export type Sensor = {
   id: number;
   name: string;

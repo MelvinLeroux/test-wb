@@ -1,53 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModuleList from '../components/moduleList/ModuleList';
 import AddModuleModal from '../components/AddModuleModal';
 import ModuleListHeader from '../components/moduleList/ModuleListHeader';
 import ModulePagination from '../components/moduleList/ModulePagination';
 import { useTheme } from '../contexts/ThemeContext';
+import { useDisplay } from '../contexts/DisplayContext';
 import { Module } from '../types';
-import { getAllModules } from '../api/modules';
 import { addNewModule } from '../api/module';
 
-const LIMIT = 6;
-
 const Modules: React.FC = () => {
-  const [modules, setModules] = useState<Module[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useTheme();
+  const { page, totalPages, setPage, refreshModules } = useDisplay();
 
-  useEffect(() => {
-    fetchModules(page);
-  }, [page]);
-
-  const fetchModules = async (page = 1) => {
-    try {
-      const response = await getAllModules(page, LIMIT);
-      const result = response;
-      setModules(result.data);
-      setTotalPages(result.pages);
-    } catch (error) {
-      console.error('Erreur:', error);
-    }
-  };
-
-  const handleModuleDetails = (module: Module) => {
-    navigate(`/modules/${module.id}`);
+  const handleModuleDetails = (moduleId: number) => {
+    navigate(`/modules/${moduleId}`);
   };
 
   const handleAddModule = async (
     newModule: Pick<Module, 'name' | 'sensors'>
   ) => {
     try {
-      const createdModule = await addNewModule(newModule);
-      setModules(prevModules => [...prevModules, createdModule]);
+      await addNewModule(newModule);
+      refreshModules(); // recharge les modules depuis le contexte
       setShowAddModal(false);
     } catch (error) {
       console.error('Erreur:', error);
-      // Tu peux ajouter une notification ou autre ici
       throw error;
     }
   };
@@ -60,7 +40,7 @@ const Modules: React.FC = () => {
           onToggleDarkMode={toggleDarkMode}
           darkMode={darkMode}
         />
-        <ModuleList modules={modules} onModuleDetails={handleModuleDetails} />
+        <ModuleList onModuleDetails={handleModuleDetails} />
         <ModulePagination
           page={page}
           totalPages={totalPages}

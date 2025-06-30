@@ -4,16 +4,19 @@ import ModuleListPage from './pages/Modules';
 import ModuleDetails from './pages/ModuleDetails';
 import { ThemeProvider } from './contexts/ThemeContext';
 import './App.css';
+import { DisplayProvider } from './contexts/DisplayContext';
 
 function App() {
   return (
     <ThemeProvider>
-      <Router>
-        <Routes>
-          <Route path='/' element={<ModuleListPage />} />
-          <Route path='/modules/:id' element={<ModuleDetails />} />
-        </Routes>
-      </Router>
+      <DisplayProvider>
+        <Router>
+          <Routes>
+            <Route path='/' element={<ModuleListPage />} />
+            <Route path='/modules/:id' element={<ModuleDetails />} />
+          </Routes>
+        </Router>
+      </DisplayProvider>
     </ThemeProvider>
   );
 }

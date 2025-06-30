@@ -8,6 +8,7 @@ import React, {
 import { getAllModules } from '../api/modules';
 import { Module } from '../types';
 import { deleteModule } from '../api/module';
+import { addNewModule } from '../api/module';
 
 interface DisplayContextType {
   modules: Module[];
@@ -15,6 +16,7 @@ interface DisplayContextType {
   totalPages: number;
   setPage: (page: number) => void;
   deleteModuleById: (id: number) => void;
+  addModule: (newModule: Pick<Module, 'name' | 'sensors'>) => Promise<void>;
 }
 
 const DisplayContext = createContext<DisplayContextType | undefined>(undefined);
@@ -45,6 +47,16 @@ export const DisplayProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const addModule = async (newModule: Pick<Module, 'name' | 'sensors'>) => {
+    try {
+      const payload = await addNewModule(newModule);
+
+      modules.push(payload);
+    } catch (error) {
+      console.error('Erreur:', error);
+      throw error;
+    }
+  };
   useEffect(() => {
     fetchModules(page);
   }, [page, fetchModules]);
@@ -57,6 +69,7 @@ export const DisplayProvider: React.FC<{ children: React.ReactNode }> = ({
         totalPages,
         setPage,
         deleteModuleById,
+        addModule,
       }}
     >
       {children}

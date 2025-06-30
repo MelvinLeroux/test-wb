@@ -6,8 +6,6 @@ import ModuleListHeader from '../components/moduleList/ModuleListHeader';
 import ModulePagination from '../components/moduleList/ModulePagination';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDisplay } from '../contexts/DisplayContext';
-import { Module } from '../types';
-import { addNewModule } from '../api/module';
 
 const Modules: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -19,19 +17,7 @@ const Modules: React.FC = () => {
     navigate(`/modules/${moduleId}`);
   };
 
-  const handleAddModule = async (
-    newModule: Pick<Module, 'name' | 'sensors'>
-  ) => {
-    try {
-      const test = await addNewModule(newModule);
-      console.log(test);
-      // handle add module to context
-      setShowAddModal(false);
-    } catch (error) {
-      console.error('Erreur:', error);
-      throw error;
-    }
-  };
+  const { addModule } = useDisplay();
 
   return (
     <div className='min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200'>
@@ -50,7 +36,7 @@ const Modules: React.FC = () => {
         {showAddModal && (
           <AddModuleModal
             onClose={() => setShowAddModal(false)}
-            onAdd={handleAddModule}
+            onAdd={addModule}
           />
         )}
       </div>

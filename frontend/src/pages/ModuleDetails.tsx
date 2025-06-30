@@ -28,7 +28,6 @@ const ModuleDetails: React.FC = () => {
     setError(null);
     try {
       const response = await getCurrentModule(id);
-      console.log(response);
       const data = response;
       setModule(data);
       if (data.sensors && data.sensors.length > 0) {

@@ -6,9 +6,10 @@ import React, {
   useEffect,
 } from 'react';
 import { getAllModules } from '../api/modules';
-import { Module } from '../types';
+import { Module, ModulePut } from '../types';
 import { deleteModule } from '../api/module';
 import { addNewModule } from '../api/module';
+import { updateModule } from '../api/module';
 
 interface DisplayContextType {
   modules: Module[];
@@ -17,6 +18,7 @@ interface DisplayContextType {
   setPage: (page: number) => void;
   deleteModuleById: (id: number) => void;
   addModule: (newModule: Pick<Module, 'name' | 'sensors'>) => Promise<void>;
+  updateModuleById: (id: number, data: ModulePut) => Promise<void>;
 }
 
 const DisplayContext = createContext<DisplayContextType | undefined>(undefined);
@@ -57,6 +59,16 @@ export const DisplayProvider: React.FC<{ children: React.ReactNode }> = ({
       throw error;
     }
   };
+
+  const updateModuleById = async (id: number, data: ModulePut) => {
+    try {
+      const payload = await updateModule(id, data);
+      console.log(payload);
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  };
+
   useEffect(() => {
     fetchModules(page);
   }, [page, fetchModules]);
@@ -70,6 +82,7 @@ export const DisplayProvider: React.FC<{ children: React.ReactNode }> = ({
         setPage,
         deleteModuleById,
         addModule,
+        updateModuleById,
       }}
     >
       {children}

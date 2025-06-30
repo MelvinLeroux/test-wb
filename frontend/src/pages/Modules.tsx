@@ -6,15 +6,24 @@ import ModuleListHeader from '../components/moduleList/ModuleListHeader';
 import ModulePagination from '../components/moduleList/ModulePagination';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDisplay } from '../contexts/DisplayContext';
+import UpdateModuleModal from '../components/UpdateModuleModal';
 
 const Modules: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useTheme();
   const { page, totalPages, setPage } = useDisplay();
+  const [currentModuleId, setCurrentModuleId] = useState<number | undefined>(
+    undefined
+  );
 
   const handleModuleDetails = (moduleId: number) => {
     navigate(`/modules/${moduleId}`);
+  };
+  const handleModuleUpdate = (moduleId: number) => {
+    setShowUpdateModal(true);
+    setCurrentModuleId(moduleId);
   };
 
   const { addModule } = useDisplay();
@@ -27,7 +36,10 @@ const Modules: React.FC = () => {
           onToggleDarkMode={toggleDarkMode}
           darkMode={darkMode}
         />
-        <ModuleList onModuleDetails={handleModuleDetails} />
+        <ModuleList
+          onModuleDetails={handleModuleDetails}
+          onModuleUpdate={handleModuleUpdate}
+        />
         <ModulePagination
           page={page}
           totalPages={totalPages}
@@ -38,6 +50,12 @@ const Modules: React.FC = () => {
             onClose={() => setShowAddModal(false)}
             onAdd={addModule}
           />
+        )}
+        {showUpdateModal && !!currentModuleId && (
+          <UpdateModuleModal
+            moduleId={currentModuleId}
+            onClose={() => setShowUpdateModal(false)}
+          ></UpdateModuleModal>
         )}
       </div>
     </div>

@@ -19,7 +19,6 @@ export const Button = ({
 }: Props) => {
   const handleClick = () => {
     onClick();
-    console.log('toto');
   };
   let classNames: string = '';
   const sizeStyles: string =

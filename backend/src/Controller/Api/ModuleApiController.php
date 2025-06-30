@@ -45,7 +45,7 @@ class ModuleApiController extends AbstractController
     }
 
     #[Route('/api/modules', name: 'api_module_create', methods: ['POST'])]
-    public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function create(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         
@@ -64,8 +64,8 @@ class ModuleApiController extends AbstractController
             }
         }
 
-        $entityManager->persist($module);
-        $entityManager->flush();
+        $em->persist($module);
+        $em->flush();
 
         return $this->json([
             'id' => $module->getId(),
@@ -105,7 +105,29 @@ class ModuleApiController extends AbstractController
 
         return $this->json($moduleData);
     }
-
+    #[Route('/api/modules/{id}', name: 'api_module_update', methods: ['PUT'], requirements: ['id' => '\d+'])]
+    public function update(
+        int $id,
+        Request $request,
+        ModuleRepository $moduleRepository,
+        EntityManagerInterface $em
+        ): JsonResponse {
+            $data = json_decode($request->getContent(), true);
+            $module = $moduleRepository->find($id);
+            if (!isset($data) || !isset($data['name'])) {
+                return $this->json(['error' => 'Erreur dans la request reçue'], 422);
+            } 
+            if (!$module) {
+                return $this->json(['error' => 'Le module nexiste pas'], 404);
+            }
+            $module->setName($data['name']);
+            $em->persist($module);
+            $em->flush();
+            
+            return $this->json(['success' => 'Le module a bien été update'], 200);
+        } 
+    
+    
     #[Route('api/modules/{id}', name: 'api-module_delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function delete(
         int $id, 
@@ -114,7 +136,7 @@ class ModuleApiController extends AbstractController
         ): JsonResponse {
             $module = $moduleRepository->find($id);
             if (!$module) {
-            return $this->json(['error' => 'Le module nexiste pas'], 404);
+                return $this->json(['error' => 'Le module nexiste pas'], 404);
             }
             $em->remove($module);
             $em->flush();

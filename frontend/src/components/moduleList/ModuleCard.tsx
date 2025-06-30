@@ -7,6 +7,8 @@ interface ModuleCardProps {
   onDetails: () => void;
   detailsLabel?: string;
   deleteLabel?: string;
+  onUpdate: () => void;
+  updateLabel?: string;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({
@@ -14,6 +16,8 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   onDetails,
   detailsLabel = 'Détails',
   deleteLabel = 'Supprimer',
+  updateLabel = 'mettre à jour',
+  onUpdate,
 }) => {
   const { deleteModuleById } = useDisplay();
 
@@ -43,6 +47,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
         {detailsLabel}
       </Button>
       <Button onClick={() => deleteModuleById(module.id)}>{deleteLabel}</Button>
+      <Button onClick={onUpdate}>{updateLabel}</Button>
     </div>
   );
 };

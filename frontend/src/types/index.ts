@@ -15,6 +15,9 @@ export type Module = {
   stoppedAt?: string;
 };
 
+export type ModulePut = {
+  name: string;
+};
 export type Sensor = {
   id: number;
   name: string;

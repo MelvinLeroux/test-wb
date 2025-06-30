@@ -2,9 +2,10 @@ import React from 'react';
 import ModuleCard from './ModuleCard';
 import { useDisplay } from '../../contexts/DisplayContext';
 
-const ModuleList: React.FC<{ onModuleDetails: (moduleId: number) => void }> = ({
-  onModuleDetails,
-}) => {
+const ModuleList: React.FC<{
+  onModuleDetails: (moduleId: number) => void;
+  onModuleUpdate: (moduleId: number) => void;
+}> = ({ onModuleDetails, onModuleUpdate }) => {
   const { modules } = useDisplay();
 
   if (modules.length === 0) {
@@ -22,6 +23,7 @@ const ModuleList: React.FC<{ onModuleDetails: (moduleId: number) => void }> = ({
           key={module.id}
           module={module}
           onDetails={() => onModuleDetails(module.id)}
+          onUpdate={() => onModuleUpdate(module.id)}
         />
       ))}
     </div>

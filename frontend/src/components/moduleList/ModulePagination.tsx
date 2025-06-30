@@ -13,7 +13,7 @@ const ModulePagination: React.FC<ModulePaginationProps> = ({
 }) => {
   if (totalPages <= 1) return null;
 
-  const pages = [];
+  const pages: number[] = [];
   for (let i = 1; i <= totalPages; i++) {
     pages.push(i);
   }

@@ -7,13 +7,14 @@ import React, {
 } from 'react';
 import { getAllModules } from '../api/modules';
 import { Module } from '../types';
+import { deleteModule } from '../api/module';
 
 interface DisplayContextType {
   modules: Module[];
   page: number;
   totalPages: number;
   setPage: (page: number) => void;
-  refreshModules: () => void;
+  deleteModuleById: (id: number) => void;
 }
 
 const DisplayContext = createContext<DisplayContextType | undefined>(undefined);
@@ -35,8 +36,13 @@ export const DisplayProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  const refreshModules = () => {
-    fetchModules(page);
+  const deleteModuleById = async (id: number) => {
+    try {
+      await deleteModule(id);
+      setModules(prevModules => prevModules.filter(module => module.id !== id));
+    } catch (err) {
+      console.error('Erreur lors de la suppression du module :', err);
+    }
   };
 
   useEffect(() => {
@@ -50,7 +56,7 @@ export const DisplayProvider: React.FC<{ children: React.ReactNode }> = ({
         page,
         totalPages,
         setPage,
-        refreshModules,
+        deleteModuleById,
       }}
     >
       {children}

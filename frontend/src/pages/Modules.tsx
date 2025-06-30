@@ -13,7 +13,7 @@ const Modules: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useTheme();
-  const { page, totalPages, setPage, refreshModules } = useDisplay();
+  const { page, totalPages, setPage } = useDisplay();
 
   const handleModuleDetails = (moduleId: number) => {
     navigate(`/modules/${moduleId}`);
@@ -23,8 +23,9 @@ const Modules: React.FC = () => {
     newModule: Pick<Module, 'name' | 'sensors'>
   ) => {
     try {
-      await addNewModule(newModule);
-      refreshModules(); // recharge les modules depuis le contexte
+      const test = await addNewModule(newModule);
+      console.log(test);
+      // handle add module to context
       setShowAddModal(false);
     } catch (error) {
       console.error('Erreur:', error);

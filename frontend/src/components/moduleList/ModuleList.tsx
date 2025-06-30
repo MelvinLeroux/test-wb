@@ -1,21 +1,11 @@
 import React from 'react';
 import ModuleCard from './ModuleCard';
 import { useDisplay } from '../../contexts/DisplayContext';
-import { deleteModule } from '../../api/module';
 
 const ModuleList: React.FC<{ onModuleDetails: (moduleId: number) => void }> = ({
   onModuleDetails,
 }) => {
-  const { modules, refreshModules } = useDisplay();
-
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteModule(id);
-      refreshModules(); // ✅ Recharge les modules
-    } catch (err) {
-      console.error('Erreur lors de la suppression du module :', err);
-    }
-  };
+  const { modules } = useDisplay();
 
   if (modules.length === 0) {
     return (
@@ -32,7 +22,6 @@ const ModuleList: React.FC<{ onModuleDetails: (moduleId: number) => void }> = ({
           key={module.id}
           module={module}
           onDetails={() => onModuleDetails(module.id)}
-          onDelete={() => handleDelete(module.id)}
         />
       ))}
     </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '../../design-system/Button';
 import { Module } from '../../types';
-import { useDisplay } from '../../contexts/DisplayContext';
+import { useModule } from '../../contexts/DisplayContext';
 interface ModuleCardProps {
   module: Module;
   onDetails: () => void;
@@ -19,7 +19,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   updateLabel = 'mettre à jour',
   onUpdate,
 }) => {
-  const { deleteModuleById } = useDisplay();
+  const { deleteModuleById } = useModule();
 
   return (
     <div className='bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 w-72 max-w-xs flex flex-col justify-between transition-colors duration-300 mx-auto'>

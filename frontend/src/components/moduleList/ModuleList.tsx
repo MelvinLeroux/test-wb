@@ -1,12 +1,12 @@
 import React from 'react';
 import ModuleCard from './ModuleCard';
-import { useDisplay } from '../../contexts/DisplayContext';
+import { useModule } from '../../contexts/DisplayContext';
 
 const ModuleList: React.FC<{
   onModuleDetails: (moduleId: number) => void;
   onModuleUpdate: (moduleId: number) => void;
 }> = ({ onModuleDetails, onModuleUpdate }) => {
-  const { modules } = useDisplay();
+  const { modules } = useModule();
 
   if (modules.length === 0) {
     return (

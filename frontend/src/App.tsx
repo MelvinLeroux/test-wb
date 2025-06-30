@@ -4,19 +4,19 @@ import ModuleListPage from './pages/Modules';
 import ModuleDetails from './pages/ModuleDetails';
 import { ThemeProvider } from './contexts/ThemeContext';
 import './App.css';
-import { DisplayProvider } from './contexts/DisplayContext';
+import { ModuleProvider } from './contexts/DisplayContext';
 
 function App() {
   return (
     <ThemeProvider>
-      <DisplayProvider>
+      <ModuleProvider>
         <Router>
           <Routes>
             <Route path='/' element={<ModuleListPage />} />
             <Route path='/modules/:id' element={<ModuleDetails />} />
           </Routes>
         </Router>
-      </DisplayProvider>
+      </ModuleProvider>
     </ThemeProvider>
   );
 }

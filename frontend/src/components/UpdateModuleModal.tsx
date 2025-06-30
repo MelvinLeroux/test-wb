@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../design-system/Button';
-import { useDisplay } from '../contexts/DisplayContext';
+import { useModule } from '../contexts/DisplayContext';
 
 interface AddModuleModalProps {
   onClose: () => void;
@@ -14,7 +14,7 @@ const UpdateModuleModal: React.FC<AddModuleModalProps> = ({
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { updateModuleById } = useDisplay();
+  const { updateModuleById } = useModule();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

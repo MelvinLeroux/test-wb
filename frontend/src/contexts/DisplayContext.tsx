@@ -11,7 +11,7 @@ import { deleteModule } from '../api/module';
 import { addNewModule } from '../api/module';
 import { updateModule } from '../api/module';
 
-interface DisplayContextType {
+interface ModuleContextType {
   modules: Module[];
   page: number;
   totalPages: number;
@@ -21,9 +21,9 @@ interface DisplayContextType {
   updateModuleById: (id: number, data: ModulePut) => Promise<void>;
 }
 
-const DisplayContext = createContext<DisplayContextType | undefined>(undefined);
+const ModuleContext = createContext<ModuleContextType | undefined>(undefined);
 
-export const DisplayProvider: React.FC<{ children: React.ReactNode }> = ({
+export const ModuleProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [modules, setModules] = useState<Module[]>([]);
@@ -74,7 +74,7 @@ export const DisplayProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [page, fetchModules]);
 
   return (
-    <DisplayContext.Provider
+    <ModuleContext.Provider
       value={{
         modules,
         page,
@@ -86,14 +86,14 @@ export const DisplayProvider: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       {children}
-    </DisplayContext.Provider>
+    </ModuleContext.Provider>
   );
 };
 
-export const useDisplay = (): DisplayContextType => {
-  const context = useContext(DisplayContext);
+export const useModule = (): ModuleContextType => {
+  const context = useContext(ModuleContext);
   if (!context) {
-    throw new Error('useDisplay doit être utilisé dans un DisplayProvider');
+    throw new Error('useModule doit être utilisé dans un ModuleProvider');
   }
   return context;
 };

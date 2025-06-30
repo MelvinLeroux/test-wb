@@ -5,7 +5,7 @@ import AddModuleModal from '../components/AddModuleModal';
 import ModuleListHeader from '../components/moduleList/ModuleListHeader';
 import ModulePagination from '../components/moduleList/ModulePagination';
 import { useTheme } from '../contexts/ThemeContext';
-import { useDisplay } from '../contexts/DisplayContext';
+import { useModule } from '../contexts/DisplayContext';
 import UpdateModuleModal from '../components/UpdateModuleModal';
 
 const Modules: React.FC = () => {
@@ -13,7 +13,7 @@ const Modules: React.FC = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useTheme();
-  const { page, totalPages, setPage } = useDisplay();
+  const { page, totalPages, setPage } = useModule();
   const [currentModuleId, setCurrentModuleId] = useState<number | undefined>(
     undefined
   );
@@ -26,7 +26,7 @@ const Modules: React.FC = () => {
     setCurrentModuleId(moduleId);
   };
 
-  const { addModule } = useDisplay();
+  const { addModule } = useModule();
 
   return (
     <div className='min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200'>

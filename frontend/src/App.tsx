@@ -4,7 +4,7 @@ import ModuleListPage from './pages/Modules';
 import ModuleDetails from './pages/ModuleDetails';
 import { ThemeProvider } from './contexts/ThemeContext';
 import './App.css';
-import { ModuleProvider } from './contexts/DisplayContext';
+import { ModuleProvider } from './contexts/ModuleContext';
 
 function App() {
   return (

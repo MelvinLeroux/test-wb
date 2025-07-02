@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Module } from '../types';
-import { DropDown } from '../design-system/DropDown';
 import { Button } from '../design-system/Button';
+import { Select } from '../design-system/Select';
 interface AddModuleModalProps {
   onClose: () => void;
   onAdd: (module: Pick<Module, 'name' | 'sensors'>) => Promise<void>;
@@ -58,21 +58,25 @@ const AddModuleModal: React.FC<AddModuleModalProps> = ({ onClose, onAdd }) => {
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4'>
-      <div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-2xl'>
-        <div className='flex justify-between items-center mb-6'>
+      <div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-2xl flex flex-col'>
+        <div className='flex justify-between items-center mb-6 flex-shrink-0'>
           <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100'>
             Ajouter un nouveau module
           </h2>
           <Button
             onClick={onClose}
-            className='text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 text-2xl font-bold'
             aria-label='Fermer'
+            size='xs'
+            variant='secondary'
           >
             ×
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className='space-y-6'>
+        <form
+          onSubmit={handleSubmit}
+          className='flex flex-col flex-1 overflow-y-auto space-y-6'
+        >
           <div>
             <label
               htmlFor='name'
@@ -94,10 +98,10 @@ const AddModuleModal: React.FC<AddModuleModalProps> = ({ onClose, onAdd }) => {
             <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
               Capteurs
             </label>
-            <div className='flex gap-2 mb-2'>
-              <DropDown
+            <div className='flex gap-2 mb-2 w-full'>
+              <Select
                 options={filteredOptions}
-                onDropDownChange={sensor => {
+                onSelectChange={sensor => {
                   handleAddSensor(sensor.name);
                 }}
               />
@@ -113,7 +117,8 @@ const AddModuleModal: React.FC<AddModuleModalProps> = ({ onClose, onAdd }) => {
                   </span>
                   <Button
                     onClick={() => handleRemoveSensor(sensor)}
-                    className='text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                    size='xs'
+                    variant='secondary'
                   >
                     ×
                   </Button>
@@ -124,20 +129,18 @@ const AddModuleModal: React.FC<AddModuleModalProps> = ({ onClose, onAdd }) => {
 
           {error && <div className='text-red-500 text-sm'>{error}</div>}
 
-          <div className='flex justify-end gap-4'>
-            <Button
-              onClick={onClose}
-              className='px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg'
-            >
+          <div className='mt-auto flex justify-end gap-4'>
+            <Button variant='primary' onClick={onClose}>
               Annuler
             </Button>
-            <button
+            <Button
               type='submit'
               disabled={loading}
-              className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50'
+              variant='primary'
+              size='medium'
             >
               {loading ? 'Création...' : 'Créer le module'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

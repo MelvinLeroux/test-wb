@@ -22,22 +22,27 @@ export function DropDown({ options, onDropDownChange }: DropdownProps) {
   }
 
   return (
-    <div className='relative inline-block text-left'>
-      <Button onClick={() => setIsOpen(!isOpen)}>
+    <div className='w-full'>
+      <Button
+        variant='dropdown'
+        onClick={() => setIsOpen(!isOpen)}
+        className='w-full flex text-center items-center'
+      >
         {selectedOption ? selectedOption.name : 'Options'}
         <ChevronDownIcon
           aria-hidden='true'
-          className='-mr-1 size-5 text-gray-400'
+          className='-mr-1 w-5 h-5 text-gray-400'
         />
       </Button>
 
       {isOpen && (
-        <div className='absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none'>
-          <div className='py-1'>
+        <div className='absolute left-0 z-10 mt-2 w-full origin-top-left rounded-lg bg-gray-800 shadow-xl ring-1 ring-black/30'>
+          <div className='flex flex-col p-1 w-full'>
             {options.map(option => (
               <Button
                 onClick={() => handleChangeOption(option)}
                 key={option.id}
+                className='w-full text-center px-3 py-1'
               >
                 {option.name}
               </Button>

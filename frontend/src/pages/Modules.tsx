@@ -5,7 +5,7 @@ import AddModuleModal from '../components/AddModuleModal';
 import ModuleListHeader from '../components/moduleList/ModuleListHeader';
 import ModulePagination from '../components/moduleList/ModulePagination';
 import { useTheme } from '../contexts/ThemeContext';
-import { useModule } from '../contexts/DisplayContext';
+import { useModule } from '../contexts/ModuleContext';
 import UpdateModuleModal from '../components/UpdateModuleModal';
 
 const Modules: React.FC = () => {

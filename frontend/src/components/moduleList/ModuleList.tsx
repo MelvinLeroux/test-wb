@@ -1,6 +1,6 @@
 import React from 'react';
 import ModuleCard from './ModuleCard';
-import { useModule } from '../../contexts/DisplayContext';
+import { useModule } from '../../contexts/ModuleContext';
 
 const ModuleList: React.FC<{
   onModuleDetails: (moduleId: number) => void;

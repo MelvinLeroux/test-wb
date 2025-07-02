@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../design-system/Button';
-import { useModule } from '../contexts/DisplayContext';
+import { useModule } from '../contexts/ModuleContext';
 
 interface AddModuleModalProps {
   onClose: () => void;
@@ -55,7 +55,7 @@ const UpdateModuleModal: React.FC<AddModuleModalProps> = ({
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className='space-y-6'>
+        <form onSubmit={handleSubmit} className=' space-y-6'>
           <div>
             <label
               htmlFor='name'

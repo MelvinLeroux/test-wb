@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '../../design-system/Button';
 import { Module } from '../../types';
-import { useModule } from '../../contexts/DisplayContext';
+import { useModule } from '../../contexts/ModuleContext';
 interface ModuleCardProps {
   module: Module;
   onDetails: () => void;
@@ -41,12 +41,14 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
         </ul>
       </div>
       <Button
-        className='mt-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition'
+        className='mb-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition'
         onClick={onDetails}
       >
         {detailsLabel}
       </Button>
-      <Button onClick={() => deleteModuleById(module.id)}>{deleteLabel}</Button>
+      <Button className='mb-2' onClick={() => deleteModuleById(module.id)}>
+        {deleteLabel}
+      </Button>
       <Button onClick={onUpdate}>{updateLabel}</Button>
     </div>
   );

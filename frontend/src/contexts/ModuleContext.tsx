@@ -64,6 +64,10 @@ export const ModuleProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const payload = await updateModule(id, data);
       console.log(payload);
+      const moduleIndex = modules.findIndex(module => module.id === id);
+
+      const updatedModule = { ...modules[moduleIndex], ...data };
+      modules[moduleIndex] = updatedModule;
     } catch (error) {
       console.error('Erreur:', error);
     }

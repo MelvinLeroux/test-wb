@@ -35,7 +35,7 @@ class Appfixtures extends Fixture
             ['type' => 'temperature'],
             ['type' => 'humidity'],
             ['type' => 'pressure'],
-            ['type' => 'motion_speed']
+            ['type' => 'motion speed']
         ];
 
         for ($i = 1; $i <= 10; $i++) {
@@ -55,7 +55,7 @@ class Appfixtures extends Fixture
                 $this->getReference('temperature_sensor_' . $i),
                 $this->getReference('humidity_sensor_' . $i),
                 $this->getReference('pressure_sensor_' . $i),
-                $this->getReference('motion_speed_sensor_' . $i)
+                $this->getReference('motion speed_sensor_' . $i)
             ];
             foreach ($sensors as $sensor) {
                 $createdAt = new DateTimeImmutable();
@@ -81,7 +81,7 @@ class Appfixtures extends Fixture
                             $pressure = mt_rand(950, 1050);
                             $measurement->setValue($pressure);
                             break;
-                        case 'motion_speed':
+                        case 'motion speed':
                             $motionspeed = mt_rand(0,300);
                             $measurement->setValue($motionspeed);
                             break;

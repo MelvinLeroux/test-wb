@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-#[Route('/api/v1/users', name: 'app_api_v1_user')]
+#[Route('/api/users', name: 'app_api_user')]
 class UserController extends AbstractController
 {
     private UserPasswordHasherInterface $hasher;

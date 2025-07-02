@@ -20,17 +20,15 @@ class LoginController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/api/v1/login', name: 'app_api_v1_login', methods: ['POST'])]
+    #[Route('/api/login', name: 'app_api_login', methods: ['POST'])]
     public function login(Request $request, JWTTokenManagerInterface $JWTManager, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-
         $email = $data['username'] ?? null;
         $password = $data['password'] ?? null;
         if (!$email || !$password) {
             return new JsonResponse(['error' => 'Identifiants invalides'], 400);
         }
-
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
         if (!$user || !$passwordHasher->isPasswordValid($user, $password)) {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 // src/Form/SensorFormType.php
 
@@ -21,10 +21,9 @@ class SensorFormType extends AbstractType
                     'Temperature' => 'temperature',
                     'Humidity' => 'humidity',
                     'Pressure' => 'pressure',
-                    'none' => ''
+                    'none' => '',
                 ],
                 'required' => false, // Marquer le champ comme non requis
-
             ]);
     }
 

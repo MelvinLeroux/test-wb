@@ -18,7 +18,6 @@ class Measurement
 
     #[ORM\ManyToOne(inversedBy: 'measurements')]
     #[ORM\JoinColumn(name: 'module_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-
     private ?Module $module = null;
 
     #[ORM\ManyToOne(inversedBy: 'measurements')]

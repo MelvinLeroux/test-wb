@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\Entity\Module;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -38,17 +37,17 @@ class GenerateModuleStatusCommand extends Command
             $status = random_int(0, 1);
             $module->setStatus($status);
             // if status is 0, set stoppedAt to current date and time
-            if ($status === 0) {
-                $stoppedAt = new DateTimeImmutable();
+            if (0 === $status) {
+                $stoppedAt = new \DateTimeImmutable();
                 $module->setStoppedAt($stoppedAt);
             } else {
                 // if status is 1, set startedAt to current date and time and stoppedAt to null
                 $module->setStoppedAt(null);
-                $module->setStartedAt(new DateTimeImmutable());
+                $module->setStartedAt(new \DateTimeImmutable());
             }
             // if status is 1 and startedAt is null, set startedAt to current date and time
-            if ($module->getStartedAt() === null) {
-                $startedAt = new DateTimeImmutable();
+            if (null === $module->getStartedAt()) {
+                $startedAt = new \DateTimeImmutable();
                 $module->setStartedAt($startedAt);
             }
             $this->entityManager->persist($module);

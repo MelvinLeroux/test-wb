@@ -7,11 +7,11 @@ use App\Entity\Sensor;
 use App\Form\ModuleFormType;
 use App\Repository\MeasurementRepository;
 use App\Repository\SensorRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('', name: 'app_module')]
 class ModuleController extends AbstractController
@@ -27,29 +27,29 @@ class ModuleController extends AbstractController
     public function index(): Response
     {
         $modules = $this->entityManager->getRepository(Module::class)->findAll();
-        
+
         return $this->render('module/index.html.twig', [
-            'modules' => $modules
+            'modules' => $modules,
         ]);
     }
 
     #[Route('/{id}', name: '_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(Module $module, SensorRepository $sensorRepository, MeasurementRepository $measurementRepository ): Response   
+    public function show(Module $module, SensorRepository $sensorRepository, MeasurementRepository $measurementRepository): Response
     {
         // get all measurements and sensors for the current module
         $measurements = $measurementRepository->findAllByModuleId($module->getId());
         $sensors = $sensorRepository->findAllByModuleId($module->getId());
-        
+
         return $this->render('module/show.html.twig', [
             'module' => $module,
             'sensors' => $sensors,
-            'measurements' => $measurements
+            'measurements' => $measurements,
         ]);
     }
 
-    #[Route('/create', name: '_create', methods: ['GET','POST'])]
+    #[Route('/create', name: '_create', methods: ['GET', 'POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
-    { 
+    {
         $module = new Module();
         // Create 3 sensors for the module
         $sensor1 = new Sensor();
@@ -71,7 +71,7 @@ class ModuleController extends AbstractController
             foreach ($module->getSensors() as $key => $sensor) {
                 $type = $sensor->getType();
                 // delete sensors with type null or empty
-                if ($type === 'null' || $type === '') {
+                if ('null' === $type || '' === $type) {
                     $module->removeSensor($sensor);
                     $entityManager->remove($sensor);
                 } else {
@@ -81,7 +81,7 @@ class ModuleController extends AbstractController
             $entityManager->persist($module);
             $entityManager->flush();
             $this->addFlash('success', 'Module created successfully!');
-        
+
             return $this->redirectToRoute('app_module_list');
         }
 

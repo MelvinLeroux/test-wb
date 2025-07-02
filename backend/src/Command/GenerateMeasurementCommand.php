@@ -4,7 +4,6 @@ namespace App\Command;
 
 use App\Entity\Measurement;
 use App\Entity\Module;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateMeasurementCommand extends Command
 {
     private $entityManager;
+
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -30,7 +30,7 @@ class GenerateMeasurementCommand extends Command
         $modules = $this->entityManager->getRepository(Module::class)->findAll();
         // Loop through all modules
         foreach ($modules as $module) {
-            if (!$module->isStatus()=== true) {
+            if (true === !$module->isStatus()) {
                 continue;
             }
             // Get all sensors for the current module
@@ -40,8 +40,8 @@ class GenerateMeasurementCommand extends Command
                 $measurement = new Measurement();
                 $measurement->setSensor($sensor);
                 $measurement->setModule($module);
-                
-                $createdAt = new DateTimeImmutable();
+
+                $createdAt = new \DateTimeImmutable();
                 $measurement->setCreatedAt($createdAt);
                 // Generate random value based on sensor type
                 switch ($sensor->getType()) {
@@ -57,9 +57,9 @@ class GenerateMeasurementCommand extends Command
                     default:
                         $value = 0;
                 }
-                
+
                 $measurement->setValue($value);
-                
+
                 // add measurement
                 $this->entityManager->persist($measurement);
             }

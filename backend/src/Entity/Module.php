@@ -28,13 +28,13 @@ class Module
     /**
      * @var Collection<int, Sensor>
      */
-    #[ORM\OneToMany(targetEntity: Sensor::class, mappedBy: 'module',cascade: ['persist','remove'],orphanRemoval:true)]
+    #[ORM\OneToMany(targetEntity: Sensor::class, mappedBy: 'module', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $sensors;
 
     /**
      * @var Collection<int, Measurement>
      */
-    #[ORM\OneToMany(targetEntity: Measurement::class, mappedBy: 'module', cascade: ['persist','remove'],orphanRemoval:true)]
+    #[ORM\OneToMany(targetEntity: Measurement::class, mappedBy: 'module', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $measurements;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -46,8 +46,6 @@ class Module
     /**
      * @var Collection<int, Measurement>
      */
-
-
     public function __construct()
     {
         $this->sensors = new ArrayCollection();

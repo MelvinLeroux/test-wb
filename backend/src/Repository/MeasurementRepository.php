@@ -37,6 +37,7 @@ class MeasurementRepository extends ServiceEntityRepository
     public function findLast12hByModuleId($moduleId)
     {
         $date = new \DateTimeImmutable('-12 hours');
+
         return $this->createQueryBuilder('m')
             ->join('m.Sensor', 's')
             ->join('s.module', 'mod')

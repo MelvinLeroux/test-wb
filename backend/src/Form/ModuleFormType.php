@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Form;
 
 use App\Entity\Module;
@@ -37,10 +38,10 @@ class ModuleFormType extends AbstractType
     public function validateSensors($sensors, ExecutionContextInterface $context)
     {
         $sensorTypes = [];
-        
+
         foreach ($sensors as $sensor) {
             $type = $sensor->getType();
-            
+
             // check if the sensor type is already present
             if (in_array($type, $sensorTypes)) {
                 // add a violation to the form field 'sensors' if the sensor type is already present

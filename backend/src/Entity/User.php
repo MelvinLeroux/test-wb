@@ -33,13 +33,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(length: 100, unique: true)]
     private ?string $email = null;
 
-    #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 1,
-        max: 40,
-        minMessage: 'La ville doit comporter {{ limit }} charactères minimum',
-        maxMessage: 'La ville doit comporter {{ limit }} charactères maximum',
-    )]
+ 
     #[ORM\Column(length: 100)]
     private array $roles = [];
 

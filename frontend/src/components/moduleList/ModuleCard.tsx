@@ -15,7 +15,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   module,
   onDetails,
   detailsLabel = 'Détails',
-  deleteLabel = 'Supprimer',
+  deleteLabel = 'x',
   updateLabel = 'mettre à jour',
   onUpdate,
 }) => {
@@ -24,6 +24,15 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   return (
     <div className='bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 w-72 max-w-xs flex flex-col justify-between transition-colors duration-300 mx-auto'>
       <div>
+        <Button
+          aria-label='Fermer'
+          size='xs'
+          variant='secondary'
+          className='justify-self-end'
+          onClick={() => deleteModuleById(module.id)}
+        >
+          {deleteLabel}
+        </Button>
         <h5 className='text-xl font-bold mb-2 text-gray-900 dark:text-gray-100'>
           {module.name}
         </h5>
@@ -45,9 +54,6 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
         onClick={onDetails}
       >
         {detailsLabel}
-      </Button>
-      <Button className='mb-2' onClick={() => deleteModuleById(module.id)}>
-        {deleteLabel}
       </Button>
       <Button onClick={onUpdate}>{updateLabel}</Button>
     </div>

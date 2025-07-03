@@ -24,10 +24,10 @@ const ModuleListHeader: React.FC<ModuleListHeaderProps> = ({
       >
         Ajouter un module
       </Button>
+      <Button onClick={logout}>Se déconnecter</Button>
       <Button onClick={onToggleDarkMode} size='xs' variant='secondary'>
         {darkMode ? '☀️' : '🌙'}
       </Button>
-      <Button onClick={logout}>Se déconnecter</Button>
     </div>
   </div>
 );

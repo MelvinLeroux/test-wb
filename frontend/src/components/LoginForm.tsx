@@ -30,7 +30,7 @@ export function LoginForm({
     setLoading(true);
 
     try {
-      await fetchAuth({ username: email, password });
+      await fetchAuth({ email: email, password });
       navigate('/');
     } catch (err: any) {
       setError('Échec de la connexion');
@@ -92,7 +92,7 @@ export function LoginForm({
             </div>
             <div className='mt-4 text-center text-sm'>
               Don&apos;t have an account?{' '}
-              <a href='#' className='underline underline-offset-4'>
+              <a href='/signup' className='underline underline-offset-4'>
                 Sign up
               </a>
             </div>

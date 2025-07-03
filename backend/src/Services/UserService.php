@@ -3,14 +3,15 @@
 namespace App\Services;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Error;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\UserRepository;
 
-class UserService
+class UserService 
 {
     private $entityManager;
     private $hasher;
@@ -20,46 +21,43 @@ class UserService
         $this->entityManager = $entityManager;
         $this->hasher = $hasher;
     }
-
     public function createUser($data, EntityManagerInterface $entityManager, UserRepository $userRepository)
     {
         $existingUser = $userRepository->findOneBy(['email' => $data['email']]);
         if ($existingUser) {
-            throw new \Error('Cette adresse e-mail est déjà utilisée.');
+            throw new Error('Cette adresse e-mail est déjà utilisée.');
         }
-        $requiredFields = ['pseudo', 'email', 'password', 'firstname', 'lastname', 'birthdate', 'city', 'age'];
+        $requiredFields = ['email', 'password'];
         foreach ($requiredFields as $field) {
             if (!isset($data[$field]) || empty($data[$field])) {
-                throw new \Error('Tous les champs doivent être remplis');
+            throw new Error('Tous les champs doivent être remplis');
             }
         }
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new \Error('L\'adresse e-mail n\'est pas au bon format');
+            throw new Error('L\'adresse e-mail n\'est pas au bon format');
         }
         if (!$this->isPasswordValid($data['password'])) {
-            throw new \Error('Le mot de passe doit contenir au moins une majuscule, une lettre minuscule, un chiffre et un caractère spécial');
+            throw new Error('Le mot de passe doit contenir au moins une majuscule, une lettre minuscule, un chiffre et un caractère spécial');
         }
-        if (null === $data['age']) {
-            throw new \Error('Sur le sang de tes morts tu dois dire t\as plus de 18 ans');
-        }
+        
 
         $user = new User();
-        $user->setPseudo($data['pseudo']);
+        $user->setPseudo($data['email']);
         $password = $data['password'];
-        $hashedPassword = $this->hasher->hashPassword($user, $password);
+        $hashedPassword = $this->hasher->hashPassword($user,$password);
         $user->setPassword($hashedPassword);
         $user->setEmail($data['email']);
-        $user->setCreatedAt(new \DateTimeImmutable());
-        // Gestion du fichier thumbnail
-
-        // Créer une instance UploadedFile pour le fichier thumbnail
+        $user->setCreatedAt(new \DateTimeImmutable());        
+    
 
         return $user;
     }
 
     public function update(User $user, $data, EntityManagerInterface $entityManager, UserPasswordHasherInterface $hasher)
     {
+
         if (isset($data['pseudo']) && !empty($data['pseudo'])) {
+
             $user->setPseudo($data['pseudo']);
 
             if (isset($data['email'])) {
@@ -71,16 +69,13 @@ class UserService
             }
         }
 
-        // Gestion des mots de passe
 
-        // on définit les champs qui contiennent des mots de passe
         $passwordsFields = [
             'oldPassword',
             'newPassword',
-            'confirmNewPassword',
+            'confirmNewPassword'
         ];
 
-        // on extrait les champs de mot de passe reçus
         $passwords = [];
         foreach ($passwordsFields as $field) {
             if (key_exists($field, $data) && $data[$field]) {
@@ -88,14 +83,11 @@ class UserService
             }
         }
 
-        // on compte le nombre de mots de passe reçus
         $passwordsCount = count($passwords);
 
-        // si on a reçu au moins un mot de passe...
         if ($passwordsCount > 0) {
-            // ...et si on n'a pas reçu tous les mots de passe
+
             if ($passwordsCount < count($passwordsFields)) {
-                // alors on retourne une réponse d'erreur
                 return new JsonResponse(['error' => 'Veuillez remplir tous les champs de mot de passe.'], JsonResponse::HTTP_BAD_REQUEST);
             }
 
@@ -116,13 +108,10 @@ class UserService
                 $user->setPassword($hashedPassword);
             }
         }
-
         return $user;
     }
-
     private function isPasswordValid($password)
     {
-        // Vérifie si le mot de passe contient au moins une majuscule, une lettre minuscule, un chiffre et un caractère spécial
         return preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&_\-\.])[A-Za-z\d@$!%*?&_\-\.]{8,}$/', $password);
     }
 }

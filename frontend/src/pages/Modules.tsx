@@ -7,6 +7,7 @@ import ModulePagination from '../components/moduleList/ModulePagination';
 import { useTheme } from '../contexts/ThemeContext';
 import { useModule } from '../contexts/ModuleContext';
 import UpdateModuleModal from '../components/UpdateModuleModal';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Modules: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -17,6 +18,8 @@ const Modules: React.FC = () => {
   const [currentModuleId, setCurrentModuleId] = useState<number | undefined>(
     undefined
   );
+  const { addModule } = useModule();
+  const { logout } = useAuth();
 
   const handleModuleDetails = (moduleId: number) => {
     navigate(`/modules/${moduleId}`);
@@ -26,7 +29,14 @@ const Modules: React.FC = () => {
     setCurrentModuleId(moduleId);
   };
 
-  const { addModule } = useModule();
+  const disconnect = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className='min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200'>
@@ -35,6 +45,7 @@ const Modules: React.FC = () => {
           onAdd={() => setShowAddModal(true)}
           onToggleDarkMode={toggleDarkMode}
           darkMode={darkMode}
+          logout={disconnect}
         />
         <ModuleList
           onModuleDetails={handleModuleDetails}

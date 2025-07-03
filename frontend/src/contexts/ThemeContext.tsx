@@ -11,14 +11,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [darkMode, setDarkMode] = useState(() => {
-    // Récupérer la préférence depuis le localStorage au chargement
     const savedMode = localStorage.getItem('darkMode');
 
     return savedMode ? JSON.parse(savedMode) : false;
   });
 
   useEffect(() => {
-    // Sauvegarder la préférence dans le localStorage
     localStorage.setItem('darkMode', JSON.stringify(darkMode));
 
     if (darkMode) {

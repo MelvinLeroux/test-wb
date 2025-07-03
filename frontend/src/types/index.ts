@@ -18,7 +18,13 @@ export type Module = {
 export type ModulePut = {
   name: string;
 };
+
 export type Sensor = {
   id: number;
   name: string;
+};
+
+export type User = {
+  username: string;
+  password: string;
 };

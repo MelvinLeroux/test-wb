@@ -4,12 +4,14 @@ interface ModuleListHeaderProps {
   onAdd: () => void;
   onToggleDarkMode: () => void;
   darkMode: boolean;
+  logout: () => Promise<void>;
 }
 
 const ModuleListHeader: React.FC<ModuleListHeaderProps> = ({
   onAdd,
   onToggleDarkMode,
   darkMode,
+  logout,
 }) => (
   <div className='flex justify-between items-center mb-8'>
     <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>
@@ -25,6 +27,7 @@ const ModuleListHeader: React.FC<ModuleListHeaderProps> = ({
       <Button onClick={onToggleDarkMode} size='xs' variant='secondary'>
         {darkMode ? '☀️' : '🌙'}
       </Button>
+      <Button onClick={logout}>Se déconnecter</Button>
     </div>
   </div>
 );

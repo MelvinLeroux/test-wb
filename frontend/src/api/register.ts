@@ -1,5 +1,5 @@
 import api from '../config/axios-client';
-import { User } from '../types';
+import { UserLogin } from '../types';
 
-export const createUser = (user: User): Promise<User> =>
+export const createUser = (user: UserLogin): Promise<UserLogin> =>
   api.post('/api/users', user).then(response => response.data);

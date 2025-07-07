@@ -17,6 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ModuleApiController extends AbstractController
 {
     #[Route('/api/modules', name: 'api_modules', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(ModuleRepository $moduleRepository, Request $request): JsonResponse
     {
         $page = max(1, (int) $request->query->get('page', 1));

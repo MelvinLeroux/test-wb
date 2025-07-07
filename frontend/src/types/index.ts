@@ -24,6 +24,24 @@ export type Sensor = {
   name: string;
 };
 
+export type UserLogin = {
+  email: string;
+  password: string;
+  role?: string[];
+};
+
+export type LoggedUser = {
+  id: number;
+  email: string;
+  pseudo: string;
+  roles: string[];
+};
+
+export type LoginResponse = {
+  token: string;
+  user: LoggedUser;
+};
+
 export type User = {
   email: string;
   password: string;

@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -53,27 +52,26 @@ class UserController extends AbstractController
         );
     }
 
-   #[Route('', name: 'create', methods: 'POST')]
-public function create(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): JsonResponse
-{
-    try {
-        $data = json_decode($request->getContent(), true);
+    #[Route('', name: 'create', methods: 'POST')]
+    public function create(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
 
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            return new JsonResponse('L\'adresse e-mail n\'est pas au bon format', 400);
+            if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                return new JsonResponse('L\'adresse e-mail n\'est pas au bon format', 400);
+            }
+
+            $user = $this->userService->createUser($data, $entityManager, $userRepository);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->json($user, 201, []);
+        } catch (\Throwable $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 403);
         }
-
-        $user = $this->userService->createUser($data, $entityManager, $userRepository);
-
-        $entityManager->persist($user);
-        $entityManager->flush();
-
-        return $this->json($user, 201, []);
-    } catch (\Throwable $e) {
-        return new JsonResponse(['error' => $e->getMessage()], 403);
     }
-}
-
 
     #[Route('/{id}', name: 'update', methods: ['PATCH'])]
     public function update(int $id, User $user, Request $request, EntityManagerInterface $entityManager, Security $security): JsonResponse

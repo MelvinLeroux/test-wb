@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
-import { User } from '../types';
+import { LoggedUser, UserLogin } from '../types';
 import { login } from '../api/login';
 
 interface IAuthContext {
-  currentUser: User | undefined;
-  fetchAuth: (user: User) => Promise<void>;
+  currentUser: LoggedUser | undefined;
+  fetchAuth: (user: UserLogin) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -13,19 +13,24 @@ export const AuthContext = createContext<IAuthContext | undefined>(undefined); /
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
+  const [currentUser, setCurrentUser] = useState<LoggedUser | undefined>(
+    undefined
+  );
 
-  const fetchAuth = async (user: User): Promise<void> => {
+  const fetchAuth = async (user: UserLogin): Promise<void> => {
     try {
-      await login(user);
-      setCurrentUser(user);
+      const { token, user: currentUser } = await login(user);
+      localStorage.setItem('token', token);
+      setCurrentUser(currentUser);
     } catch (err) {
       console.error(err, 'Erreur lors de la connexion');
+      throw err;
     }
   };
   const logout = async (): Promise<void> => {
     try {
       setCurrentUser(undefined);
+      localStorage.removeItem('token');
     } catch (err) {
       console.error(err, 'erreur lors de la deonnexion');
     }

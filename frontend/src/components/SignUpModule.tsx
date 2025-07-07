@@ -1,7 +1,7 @@
 import { createUser } from '@/api/register';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { User } from '@/types';
+import { UserLogin } from '@/types';
 import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,8 +22,10 @@ const Signup = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
-  const create = async (user: User): Promise<void> => {
+  const [currentUser, setCurrentUser] = useState<UserLogin | undefined>(
+    undefined
+  );
+  const create = async (user: UserLogin): Promise<void> => {
     try {
       await createUser(user);
       setCurrentUser(user);
@@ -34,7 +36,7 @@ const Signup = ({
   };
   const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const user: User = {
+    const user: UserLogin = {
       email,
       password,
     };

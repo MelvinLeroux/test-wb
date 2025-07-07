@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '../../design-system/Button';
 import { Module } from '../../types';
 import { useModule } from '../../contexts/ModuleContext';
+import { useAuth } from '@/contexts/AuthContext';
 interface ModuleCardProps {
   module: Module;
   onDetails: () => void;
@@ -20,19 +21,23 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   onUpdate,
 }) => {
   const { deleteModuleById } = useModule();
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.roles.includes('ROLE_ADMIN');
 
   return (
     <div className='bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 w-72 max-w-xs flex flex-col justify-between transition-colors duration-300 mx-auto'>
       <div>
-        <Button
-          aria-label='Fermer'
-          size='xs'
-          variant='secondary'
-          className='justify-self-end'
-          onClick={() => deleteModuleById(module.id)}
-        >
-          {deleteLabel}
-        </Button>
+        {isAdmin && (
+          <Button
+            aria-label='Fermer'
+            size='xs'
+            variant='secondary'
+            className='justify-self-end'
+            onClick={() => deleteModuleById(module.id)}
+          >
+            {deleteLabel}
+          </Button>
+        )}
         <h5 className='text-xl font-bold mb-2 text-gray-900 dark:text-gray-100'>
           {module.name}
         </h5>
@@ -55,7 +60,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
       >
         {detailsLabel}
       </Button>
-      <Button onClick={onUpdate}>{updateLabel}</Button>
+      {isAdmin && <Button onClick={onUpdate}>{updateLabel}</Button>}
     </div>
   );
 };

@@ -1,5 +1,8 @@
 import api from '../config/axios-client';
-import { User } from '../types';
+import { LoginResponse, UserLogin } from '../types';
 
-export const login = (user: User): Promise<User> =>
-  api.post('/api/login', user).then(response => response.data);
+export const login = (user: UserLogin): Promise<LoginResponse> =>
+  api.post('/api/auth/login', user).then(response => {
+    console.log(response, 'responseuh');
+    return response.data;
+  });

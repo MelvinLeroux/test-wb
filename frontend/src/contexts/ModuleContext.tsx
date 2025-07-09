@@ -7,10 +7,8 @@ import React, {
 } from 'react';
 import { getAllModules } from '../api/modules';
 import { Module, ModulePut } from '../types';
-import { deleteModule } from '../api/module';
-import { addNewModule } from '../api/module';
-import { updateModule } from '../api/module';
-
+import { deleteModule, addNewModule, updateModule } from '../api/module';
+import * as Sentry from '@sentry/react';
 interface ModuleContextType {
   modules: Module[];
   page: number;
@@ -33,10 +31,12 @@ export const ModuleProvider: React.FC<{ children: React.ReactNode }> = ({
   const fetchModules = useCallback(async (currentPage = 1) => {
     try {
       const response = await getAllModules(currentPage, 6);
+
       setModules(response.data);
       setTotalPages(response.pages);
     } catch (error) {
-      console.error('Erreur de chargement des modules :', error);
+      Sentry.captureException(error);
+      throw error;
     }
   }, []);
 
@@ -45,7 +45,7 @@ export const ModuleProvider: React.FC<{ children: React.ReactNode }> = ({
       await deleteModule(id);
       setModules(prevModules => prevModules.filter(module => module.id !== id));
     } catch (err) {
-      console.error('Erreur lors de la suppression du module :', err);
+      Sentry.captureException(err);
     }
   };
 
@@ -55,7 +55,7 @@ export const ModuleProvider: React.FC<{ children: React.ReactNode }> = ({
 
       modules.push(payload);
     } catch (error) {
-      console.error('Erreur:', error);
+      Sentry.captureException(error);
       throw error;
     }
   };
@@ -69,7 +69,7 @@ export const ModuleProvider: React.FC<{ children: React.ReactNode }> = ({
       const updatedModule = { ...modules[moduleIndex], ...data };
       modules[moduleIndex] = updatedModule;
     } catch (error) {
-      console.error('Erreur:', error);
+      Sentry.captureException(error);
     }
   };
 

@@ -8,6 +8,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useModule } from '../contexts/ModuleContext';
 import UpdateModuleModal from '../components/UpdateModuleModal';
 import { useAuth } from '@/contexts/AuthContext';
+import * as Sentry from '@sentry/react';
 
 const Modules: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -18,6 +19,7 @@ const Modules: React.FC = () => {
   const [currentModuleId, setCurrentModuleId] = useState<number | undefined>(
     undefined
   );
+
   const { addModule } = useModule();
   const { logout } = useAuth();
 
@@ -34,7 +36,7 @@ const Modules: React.FC = () => {
       await logout();
       navigate('/login');
     } catch (err) {
-      console.error(err);
+      Sentry.captureException(err);
     }
   };
 

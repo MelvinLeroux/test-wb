@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState } from 'react';
 import { LoggedUser, UserLogin } from '../types';
 import { login } from '../api/login';
-
+import * as Sentry from '@sentry/react';
 interface IAuthContext {
   currentUser: LoggedUser | undefined;
   fetchAuth: (user: UserLogin) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-export const AuthContext = createContext<IAuthContext | undefined>(undefined); // export ici
+export const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -23,8 +23,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       localStorage.setItem('token', token);
       setCurrentUser(currentUser);
     } catch (err) {
-      console.error(err, 'Erreur lors de la connexion');
-      throw err;
+      console.error(err);
+      Sentry.captureException(err);
+      // const new = new Error('Erreur pendant la connexion');
     }
   };
   const logout = async (): Promise<void> => {
@@ -32,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setCurrentUser(undefined);
       localStorage.removeItem('token');
     } catch (err) {
-      console.error(err, 'erreur lors de la deonnexion');
+      Sentry.captureException(err);
     }
   };
 

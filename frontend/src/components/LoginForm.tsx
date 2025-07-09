@@ -12,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
+import * as Sentry from '@sentry/react';
 
 export function LoginForm({
   className,
@@ -33,7 +34,7 @@ export function LoginForm({
       await fetchAuth({ email: email, password });
       navigate('/');
     } catch (err: any) {
-      setError('Échec de la connexion');
+      Sentry.captureException(err);
       console.error(err);
     } finally {
       setLoading(false);

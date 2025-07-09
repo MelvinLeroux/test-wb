@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { Module } from '../types';
 import { Button } from '../design-system/Button';
 import { Select } from '../design-system/Select';
+import * as Sentry from '@sentry/react';
+
 interface AddModuleModalProps {
   onClose: () => void;
   onAdd: (module: Pick<Module, 'name' | 'sensors'>) => Promise<void>;
@@ -49,8 +51,7 @@ const AddModuleModal: React.FC<AddModuleModalProps> = ({ onClose, onAdd }) => {
       });
       onClose();
     } catch (err) {
-      console.error('Erreur lors de la création du module:', err);
-      setError('Une erreur est survenue lors de la création du module');
+      Sentry.captureException(err);
     } finally {
       setLoading(false);
     }

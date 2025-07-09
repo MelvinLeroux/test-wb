@@ -5,6 +5,8 @@ import { UserLogin } from '@/types';
 import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
+
 interface Signup1Props {
   heading?: string;
   signupText?: string;
@@ -31,7 +33,7 @@ const Signup = ({
       setCurrentUser(user);
       navigate('/');
     } catch (err) {
-      console.error(err, 'Erreur lors de la connexion');
+      Sentry.captureException(err);
     }
   };
   const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {

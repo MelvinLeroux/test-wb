@@ -3,6 +3,7 @@ import { Button } from '../../design-system/Button';
 import { Module } from '../../types';
 import { useModule } from '../../contexts/ModuleContext';
 import { useAuth } from '@/contexts/AuthContext';
+
 interface ModuleCardProps {
   module: Module;
   onDetails: () => void;

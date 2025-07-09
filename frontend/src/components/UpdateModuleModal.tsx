@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../design-system/Button';
 import { useModule } from '../contexts/ModuleContext';
+import * as Sentry from '@sentry/react';
 
 interface AddModuleModalProps {
   onClose: () => void;
@@ -32,8 +33,7 @@ const UpdateModuleModal: React.FC<AddModuleModalProps> = ({
       });
       onClose();
     } catch (err) {
-      console.error('Erreur lors de la création du module:', err);
-      setError('Une erreur est survenue lors de la création du module');
+      Sentry.captureException(err);
     } finally {
       setLoading(false);
     }

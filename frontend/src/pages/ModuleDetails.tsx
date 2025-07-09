@@ -7,6 +7,7 @@ import SensorSelector from '../components/moduleDetails/SensorSelector';
 import ModuleStatusMessage from '../components/moduleDetails/ModuleStatusMessage';
 import SensorChart from '../components/moduleDetails/SensorChart';
 import { getCurrentModule } from '../api/module';
+import * as Sentry from '@sentry/react';
 
 const ModuleDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,8 +35,7 @@ const ModuleDetails: React.FC = () => {
         setSelectedSensor(data.sensors[0]);
       }
     } catch (error) {
-      setError('Erreur lors du chargement des détails');
-      console.error('Erreur:', error);
+      Sentry.captureException(error);
     } finally {
       setLoading(false);
     }
